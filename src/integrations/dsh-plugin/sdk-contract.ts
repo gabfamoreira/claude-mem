@@ -11,7 +11,7 @@ export interface ToolExecution { name: string; agent?: Agent }
 export interface ToolExecutionResult { isError?: boolean; content: readonly ContentBlock[] }
 export type PostToolDecision = unknown;
 export interface Context {
-  on(event: string, handler: (...args: any[]) => unknown): unknown;
+  on<Args extends unknown[]>(event: string, handler: (...args: Args) => unknown): unknown;
   tools: { register(definition: unknown): unknown };
   skills: { register(skill: { name: string; description: string; source: string; content: string }): unknown };
 }

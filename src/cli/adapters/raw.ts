@@ -1,9 +1,30 @@
-import type { PlatformAdapter, NormalizedHookInput, HookResult } from '../types.js';
+import type { PlatformAdapter } from '../types.js';
 import { AdapterRejectedInput, isValidCwd } from './errors.js';
+
+/** Hook stdin shape accepted by the raw adapter (camelCase or snake_case keys). */
+interface RawHookPayload {
+  cwd?: string;
+  sessionId?: string;
+  session_id?: string;
+  prompt?: string;
+  toolName?: string;
+  tool_name?: string;
+  toolInput?: unknown;
+  tool_input?: unknown;
+  toolResponse?: unknown;
+  tool_response?: unknown;
+  toolUseId?: string;
+  tool_use_id?: string;
+  transcriptPath?: string;
+  transcript_path?: string;
+  filePath?: string;
+  file_path?: string;
+  edits?: unknown[];
+}
 
 export const rawAdapter: PlatformAdapter = {
   normalizeInput(raw) {
-    const r = (raw ?? {}) as any;
+    const r = (raw ?? {}) as RawHookPayload;
     const cwd = r.cwd || process.cwd();
     if (!isValidCwd(cwd)) {
       throw new AdapterRejectedInput('invalid_cwd');

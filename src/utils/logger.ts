@@ -1,5 +1,5 @@
 
-import { appendFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
+import { appendFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { paths } from '../shared/paths.js';
 import { emitDiagnostic } from '../shared/hook-io.js';
@@ -190,7 +190,7 @@ class Logger {
     }
   }
 
-  private formatData(data: any): string {
+  private formatData(data: unknown): string {
     if (data === null || data === undefined) return '';
     if (typeof data === 'string') return data;
     if (typeof data === 'number') return data.toString();
@@ -298,7 +298,7 @@ class Logger {
     component: Component,
     message: string,
     context?: LogContext,
-    data?: any
+    data?: unknown
   ): void {
     if (level < this.getLevel()) return;
 
@@ -334,7 +334,7 @@ class Logger {
 
     let contextStr = '';
     if (context) {
-      const { sessionId, memorySessionId, correlationId, ...rest } = context;
+      const { sessionId: _sessionId, memorySessionId: _memorySessionId, correlationId: _correlationId, ...rest } = context;
       if (Object.keys(rest).length > 0) {
         const pairs = Object.entries(rest).map(([k, v]) => {
           if (typeof v !== 'object' || v === null || v instanceof Error || v instanceof Date) return `${k}=${v}`;
@@ -364,15 +364,15 @@ class Logger {
     }
   }
 
-  debug(component: Component, message: string, context?: LogContext, data?: any): void {
+  debug(component: Component, message: string, context?: LogContext, data?: unknown): void {
     this.log(LogLevel.DEBUG, component, message, context, data);
   }
 
-  info(component: Component, message: string, context?: LogContext, data?: any): void {
+  info(component: Component, message: string, context?: LogContext, data?: unknown): void {
     this.log(LogLevel.INFO, component, message, context, data);
   }
 
-  warn(component: Component, message: string, context?: LogContext, data?: any): void {
+  warn(component: Component, message: string, context?: LogContext, data?: unknown): void {
     this.log(LogLevel.WARN, component, message, context, data);
   }
 
@@ -385,7 +385,7 @@ class Logger {
     errorSink = sink;
   }
 
-  error(component: Component, message: string, context?: LogContext, data?: any): void {
+  error(component: Component, message: string, context?: LogContext, data?: unknown): void {
     this.log(LogLevel.ERROR, component, message, context, data);
     this.routeErrorToSink(message, context, data);
   }
@@ -398,7 +398,7 @@ class Logger {
    * covered too — but it passes the same `data` object, so we de-dupe by only
    * routing from the single `error()` entry point.
    */
-  private routeErrorToSink(message: string, context?: LogContext, data?: any): void {
+  private routeErrorToSink(message: string, context?: LogContext, data?: unknown): void {
     try {
       if (!errorSink || !(data instanceof Error)) return;
       // Pass the message as context so the sink can fingerprint on it too; the
@@ -412,19 +412,19 @@ class Logger {
     }
   }
 
-  dataIn(component: Component, message: string, context?: LogContext, data?: any): void {
+  dataIn(component: Component, message: string, context?: LogContext, data?: unknown): void {
     this.info(component, `→ ${message}`, context, data);
   }
 
-  dataOut(component: Component, message: string, context?: LogContext, data?: any): void {
+  dataOut(component: Component, message: string, context?: LogContext, data?: unknown): void {
     this.info(component, `← ${message}`, context, data);
   }
 
-  success(component: Component, message: string, context?: LogContext, data?: any): void {
+  success(component: Component, message: string, context?: LogContext, data?: unknown): void {
     this.info(component, `✓ ${message}`, context, data);
   }
 
-  failure(component: Component, message: string, context?: LogContext, data?: any): void {
+  failure(component: Component, message: string, context?: LogContext, data?: unknown): void {
     this.error(component, `✗ ${message}`, context, data);
   }
 }

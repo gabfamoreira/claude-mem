@@ -50,7 +50,6 @@ import {
   buildAnthropicMaxLocalSettings,
   buildCmemActivationSettings,
   buildHostObserverSettings,
-  buildNonInteractiveOpenRouterSettings,
   buildPersonalOpenRouterSettings,
   resolveCmemMemoryCredentials,
 } from '../cmem-memory-credentials.js';
@@ -196,7 +195,7 @@ import { canonicalIntegrationId } from '../../shared/integration-id.js';
 import { checkWindowsGitBash } from '../utils/windows-git-bash-preflight.js';
 
 function registerMarketplace(): void {
-  const knownMarketplaces = readJsonSafe<Record<string, any>>(knownMarketplacesPath(), {});
+  const knownMarketplaces = readJsonSafe<Record<string, unknown>>(knownMarketplacesPath(), {});
 
   knownMarketplaces['thedotmack'] = {
     source: {
@@ -213,7 +212,7 @@ function registerMarketplace(): void {
 }
 
 function registerPlugin(version: string): void {
-  const installedPlugins = readJsonSafe<Record<string, any>>(installedPluginsPath(), {});
+  const installedPlugins = readJsonSafe<{ version?: unknown; plugins?: Record<string, unknown>; [key: string]: unknown }>(installedPluginsPath(), {});
 
   if (!installedPlugins.version) installedPlugins.version = 2;
   if (!installedPlugins.plugins) installedPlugins.plugins = {};
@@ -235,7 +234,7 @@ function registerPlugin(version: string): void {
 }
 
 function enablePluginInClaudeSettings(): void {
-  const settings = readJsonSafe<Record<string, any>>(claudeSettingsPath(), {});
+  const settings = readJsonSafe<{ enabledPlugins?: Record<string, unknown>; [key: string]: unknown }>(claudeSettingsPath(), {});
 
   if (!settings.enabledPlugins) settings.enabledPlugins = {};
   settings.enabledPlugins['claude-mem@thedotmack'] = true;
@@ -256,7 +255,7 @@ function enablePluginInClaudeSettings(): void {
  * caller to surface in the install summary).
  */
 export function disableClaudeAutoMemory(): boolean {
-  const settings = readJsonSafe<Record<string, any>>(claudeSettingsPath(), {});
+  const settings = readJsonSafe<{ env?: Record<string, unknown>; [key: string]: unknown }>(claudeSettingsPath(), {});
   const env = (settings.env && typeof settings.env === 'object') ? settings.env : {};
 
   if (env.CLAUDE_CODE_DISABLE_AUTO_MEMORY === '1') {
@@ -1249,7 +1248,7 @@ export async function promptProvider(
   pairing: InstallerOAuthPairing | null,
   version: string,
 ): Promise<ProviderId> {
-  const initialProvider = (getSetting('CLAUDE_MEM_PROVIDER') as ProviderId) || 'claude';
+  getSetting('CLAUDE_MEM_PROVIDER'); // result unused; call kept so the settings-file read still happens here
   const persistedSettings = readPersistedInstallerSettings();
 
   const persistClaudeProvider = (authMethod?: 'subscription' | 'api-key' | 'gateway') => {

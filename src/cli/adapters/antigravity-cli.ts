@@ -27,7 +27,7 @@ function unwrapAgyUserInput(text: string): string {
 // formatOutput() must key its protojson response off the same raw payload, so we
 // stash the last normalized raw input here (one normalizeInput→formatOutput
 // cycle per hook process, so module state is safe).
-let lastRawInput: Record<string, any> = {};
+let lastRawInput: Record<string, unknown> = {};
 
 export const antigravityCliAdapter: PlatformAdapter = {
   normalizeInput(raw) {
@@ -123,6 +123,7 @@ export const antigravityCliAdapter: PlatformAdapter = {
     // systemMessage on the result. Antigravity injects it via injectSteps.
     const additionalContext = r.hookSpecificOutput?.additionalContext ?? r.systemMessage;
     if (additionalContext) {
+      // eslint-disable-next-line no-control-regex -- intentional: strips ANSI escape sequences (ESC/CSI) from injected context
       const ansiRegex = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
       const cleanMessage = (additionalContext as string).replace(ansiRegex, '');
       return { injectSteps: [{ ephemeralMessage: cleanMessage }] };

@@ -1,8 +1,31 @@
 import { existsSync } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
-import type { PlatformAdapter, NormalizedHookInput, HookResult } from '../types.js';
+import type { PlatformAdapter } from '../types.js';
 import { AdapterRejectedInput, isValidCwd } from './errors.js';
+
+/** Cursor hook stdin fields read by the adapter (shape varies per hook event). */
+interface CursorHookPayload {
+  command?: string;
+  output?: unknown;
+  tool_name?: string;
+  tool_input?: unknown;
+  result_json?: unknown;
+  tool_use_id?: unknown;
+  tool_call_id?: unknown;
+  workspace_roots?: string[];
+  cwd?: string;
+  conversation_id?: string;
+  generation_id?: string;
+  /** Typed as present: the adapter has always passed this through as the session id. */
+  id: string;
+  prompt?: string;
+  query?: string;
+  input?: string;
+  message?: string;
+  file_path?: string;
+  edits?: unknown[];
+}
 
 /**
  * Derive the on-disk path to a Cursor agent transcript JSONL given the
@@ -29,7 +52,7 @@ export function deriveCursorTranscriptPath(cwd: string | undefined, sessionId: s
 
 export const cursorAdapter: PlatformAdapter = {
   normalizeInput(raw) {
-    const r = (raw ?? {}) as any;
+    const r = (raw ?? {}) as CursorHookPayload;
     const isShellCommand = !!r.command && !r.tool_name;
     const cwd = r.workspace_roots?.[0] || r.cwd || process.cwd();
     if (!isValidCwd(cwd)) {

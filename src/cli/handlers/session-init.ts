@@ -389,12 +389,6 @@ async function startServerSession(
   });
 }
 
-function parseSemanticInjectLimit(value: string | number): number {
-  const parsed = typeof value === 'number' ? value : Number.parseInt(value, 10);
-  if (!Number.isFinite(parsed) || parsed <= 0) return 5;
-  return parsed;
-}
-
 function remainingSessionInitTimeoutMs(startedAt: number, timeoutMs: number): number {
   return Math.max(0, timeoutMs - (Date.now() - startedAt));
 }

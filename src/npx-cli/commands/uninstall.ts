@@ -73,7 +73,7 @@ function removeCacheDirectory(): boolean {
 }
 
 function removeFromKnownMarketplaces(): void {
-  const knownMarketplaces = readJsonSafe<Record<string, any>>(knownMarketplacesPath(), {});
+  const knownMarketplaces = readJsonSafe<Record<string, unknown>>(knownMarketplacesPath(), {});
   if (knownMarketplaces['thedotmack']) {
     delete knownMarketplaces['thedotmack'];
     writeJsonFileAtomic(knownMarketplacesPath(), knownMarketplaces);
@@ -81,7 +81,7 @@ function removeFromKnownMarketplaces(): void {
 }
 
 function removeFromInstalledPlugins(): void {
-  const installedPlugins = readJsonSafe<Record<string, any>>(installedPluginsPath(), {});
+  const installedPlugins = readJsonSafe<{ plugins?: Record<string, unknown>; [key: string]: unknown }>(installedPluginsPath(), {});
   if (installedPlugins.plugins?.['claude-mem@thedotmack']) {
     delete installedPlugins.plugins['claude-mem@thedotmack'];
     writeJsonFileAtomic(installedPluginsPath(), installedPlugins);
@@ -120,7 +120,7 @@ function stripLegacyClaudeMemAlias(): void {
 }
 
 export function removeFromClaudeSettings(): void {
-  const settings = readJsonSafe<Record<string, any>>(claudeSettingsPath(), {});
+  const settings = readJsonSafe<{ enabledPlugins?: Record<string, unknown>; env?: Record<string, unknown>; [key: string]: unknown }>(claudeSettingsPath(), {});
   let dirty = false;
 
   if (settings.enabledPlugins?.['claude-mem@thedotmack'] !== undefined) {

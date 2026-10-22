@@ -386,8 +386,8 @@ export function buildObservationPromptParts(
   fieldMaxChars: number = OBS_PROMPT_FIELD_MAX_CHARS,
   restateSchema: boolean = false,
 ): ObservationPromptParts {
-  let toolInput: any;
-  let toolOutput: any;
+  let toolInput: unknown;
+  let toolOutput: unknown;
 
   try {
     toolInput = typeof obs.tool_input === 'string' ? JSON.parse(obs.tool_input) : obs.tool_input;

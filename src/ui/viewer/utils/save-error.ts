@@ -155,6 +155,7 @@ export async function describeSaveFailure(response: SaveErrorResponse): Promise<
     }
   }
 
+  // eslint-disable-next-line no-control-regex -- intentional: collapses C0 control chars/DEL in error text to spaces
   const ctrlChars = /[\s\u0000-\u001f\u007f]+/g;
   const normalize = (s: string) => s.replace(ctrlChars, ' ').trim();
   let normalized = normalize(message);

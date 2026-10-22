@@ -70,7 +70,7 @@ export function describeObserverOutputShape(content: unknown): ObserverOutputSha
     for (const element of content) {
       let kind = 'other';
       try {
-        const t = element != null ? (element as any).type : undefined;
+        const t = element != null ? (element as { type?: unknown }).type : undefined;
         if (typeof t === 'string' && KNOWN_BLOCK_KINDS.has(t)) {
           kind = t;
         }
@@ -81,7 +81,7 @@ export function describeObserverOutputShape(content: unknown): ObserverOutputSha
       if (kind === 'text') {
         hasTextBlock = true;
         try {
-          const txt = (element as any).text;
+          const txt = (element as { text?: unknown }).text;
           if (typeof txt === 'string') {
             joined += (joined ? '\n' : '') + txt;
           }

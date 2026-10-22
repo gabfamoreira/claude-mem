@@ -1,10 +1,31 @@
-import type { PlatformAdapter, NormalizedHookInput, HookResult } from '../types.js';
+import type { PlatformAdapter, NormalizedHookInput } from '../types.js';
 import { AdapterRejectedInput, isValidCwd } from './errors.js';
+
+/** Windsurf Cascade hook stdin: `tool_info` fields vary by `agent_action_name`. */
+interface WindsurfToolInfo {
+  cwd?: string;
+  user_prompt?: string;
+  file_path?: string;
+  edits?: unknown[];
+  command_line?: string;
+  mcp_tool_name?: string;
+  mcp_tool_arguments?: unknown;
+  mcp_result?: unknown;
+  response?: unknown;
+}
+
+interface WindsurfHookPayload {
+  tool_info?: WindsurfToolInfo;
+  agent_action_name?: string;
+  trajectory_id?: string;
+  /** Typed as present: the adapter has always passed this through as the session id. */
+  execution_id: string;
+}
 
 export const windsurfAdapter: PlatformAdapter = {
   normalizeInput(raw) {
-    const r = (raw ?? {}) as any;
-    const toolInfo = r.tool_info ?? {};
+    const r = (raw ?? {}) as WindsurfHookPayload;
+    const toolInfo: WindsurfToolInfo = r.tool_info ?? {};
     const actionName: string = r.agent_action_name ?? '';
 
     const cwd = toolInfo.cwd || process.cwd();

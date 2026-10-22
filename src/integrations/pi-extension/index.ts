@@ -152,6 +152,7 @@ export default function claudeMemPi(pi: PiExtensionAPI): void {
       const entry = [...branch].reverse().find(item => item.type === 'message' && item.message?.role === 'user');
       // Timestamp/text only validate correspondence with the real request.
       // The identity always comes from the persisted active-branch entry.id.
+      // eslint-disable-next-line no-control-regex -- intentional: rejects ids containing whitespace/C0 control chars/DEL
       if (!entry || typeof entry.id !== 'string' || !/^[^\s\x00-\x1f\x7f]{1,256}$/.test(entry.id)
         || !user || typeof user.timestamp !== 'number' || !Number.isFinite(user.timestamp)
         || entry.message?.timestamp !== user.timestamp

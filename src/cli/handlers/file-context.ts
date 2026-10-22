@@ -491,7 +491,7 @@ async function lookupFileObservationHistory(
   if (isWorkerFallback(result)) {
     return null;
   }
-  if (!result || !Array.isArray((result as any).observations)) {
+  if (!result || !Array.isArray(result.observations)) {
     logger.warn('HOOK', 'File context query returned malformed body, skipping', { filePath });
     return null;
   }

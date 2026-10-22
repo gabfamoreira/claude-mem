@@ -1,4 +1,4 @@
-import type { PlatformAdapter, NormalizedHookInput, HookResult } from '../types.js';
+import type { PlatformAdapter, HookResult } from '../types.js';
 import { AdapterRejectedInput, isValidCwd } from './errors.js';
 import { resolveHookProjectPath } from '../../utils/project-name.js';
 
@@ -36,9 +36,29 @@ export const normalizeSubmittedPrompt = (raw: unknown): string | null | undefine
   return value.trim() ? value : null;
 };
 
+/** Claude Code hook stdin fields read by the adapter (shape varies per hook event). */
+interface ClaudeCodeHookPayload {
+  [key: string]: unknown;
+  cwd?: string;
+  source?: string;
+  session_id?: string;
+  id?: string;
+  /** Typed as present: the adapter has always passed this through as the session id. */
+  sessionId: string;
+  prompt?: string;
+  tool_name?: string;
+  tool_input?: unknown;
+  tool_response?: unknown;
+  tool_use_id?: unknown;
+  transcript_path?: string;
+  reason?: unknown;
+  agent_id?: unknown;
+  agent_type?: unknown;
+}
+
 export const claudeCodeAdapter: PlatformAdapter = {
   normalizeInput(raw) {
-    const r = (raw ?? {}) as any;
+    const r = (raw ?? {}) as ClaudeCodeHookPayload;
     const inputCwd = r.cwd ?? process.cwd();
     if (!isValidCwd(inputCwd)) {
       throw new AdapterRejectedInput('invalid_cwd');
