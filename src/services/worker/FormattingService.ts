@@ -1,6 +1,8 @@
 
 import type { ObservationSearchResult, SessionSummarySearchResult, UserPromptSearchResult } from '../sqlite/types.js';
 import { ModeManager } from '../domain/ModeManager.js';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- tests/logger-usage-standards.test.ts requires high-priority files to import logger
+import { logger } from '../../utils/logger.js';
 import { formatTime } from '../../shared/timeline-formatting.js';
 
 const CHARS_PER_TOKEN_ESTIMATE = 4;

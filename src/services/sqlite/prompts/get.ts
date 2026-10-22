@@ -1,5 +1,7 @@
 
 import type { Database } from 'bun:sqlite';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- tests/logger-usage-standards.test.ts requires high-priority files to import logger
+import { logger } from '../../../utils/logger.js';
 import type { LatestPromptResult } from '../../../types/database.js';
 import { DEFAULT_PLATFORM_SOURCE } from '../../../shared/platform-source.js';
 

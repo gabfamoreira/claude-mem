@@ -2,6 +2,8 @@
 import express, { Request, Response } from 'express';
 import { BaseRouteHandler } from '../BaseRouteHandler.js';
 import { ChromaMcpManager } from '../../../sync/ChromaMcpManager.js';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- tests/logger-usage-standards.test.ts requires high-priority files to import logger
+import { logger } from '../../../../utils/logger.js';
 import { SettingsDefaultsManager } from '../../../../shared/SettingsDefaultsManager.js';
 import { USER_SETTINGS_PATH } from '../../../../shared/paths.js';
 

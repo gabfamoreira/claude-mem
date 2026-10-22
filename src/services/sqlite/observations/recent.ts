@@ -1,5 +1,7 @@
 
 import { Database } from 'bun:sqlite';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- tests/logger-usage-standards.test.ts requires high-priority files to import logger
+import { logger } from '../../../utils/logger.js';
 
 export function getFirstObservationCreatedAt(db: Database): string | null {
   const stmt = db.prepare(`
