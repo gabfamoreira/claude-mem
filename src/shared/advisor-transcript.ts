@@ -52,6 +52,15 @@ interface PendingCall {
   userTurnLine: number;
 }
 
+/** Fields read off one parsed transcript JSONL entry. */
+interface AdvisorTranscriptEntry {
+  isSidechain?: unknown;
+  type?: unknown;
+  advisorModel?: unknown;
+  timestamp?: unknown;
+  message?: { role?: unknown; content?: unknown };
+}
+
 function textFromContent(content: unknown): string {
   if (typeof content === 'string') return content;
   if (!Array.isArray(content)) return '';
@@ -152,7 +161,7 @@ export function extractAdvisorCallsFromJsonl(
     if (!rawLine || !rawLine.trim()) continue;
     // Tolerate truncated/malformed JSONL lines (crash mid-write, partial
     // flush) — same policy as transcript-parser.ts.
-    let entry: any;
+    let entry: AdvisorTranscriptEntry;
     try {
       entry = JSON.parse(rawLine);
     } catch {

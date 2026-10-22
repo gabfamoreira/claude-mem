@@ -90,7 +90,7 @@ function queryWindowsCreationDate(pid: number): string | null {
       '-NoProfile',
       '-NonInteractive',
       '-Command',
-      `(Get-CimInstance Win32_Process -Filter \"ProcessId=${pid}\").CreationDate.ToString('yyyyMMddHHmmss.ffffff')`
+      `(Get-CimInstance Win32_Process -Filter "ProcessId=${pid}").CreationDate.ToString('yyyyMMddHHmmss.ffffff')`
     ],
     {
       encoding: 'utf-8',

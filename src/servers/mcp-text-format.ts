@@ -9,6 +9,7 @@ const record = (value: unknown): Record<string, unknown> => value !== null && ty
   ? value as Record<string, unknown> : {};
 const line = (value: unknown, fallback = '', maximum = 240): string => {
   const text = typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' ? String(value) : fallback;
+  // eslint-disable-next-line no-control-regex -- intentionally replaces C0 control chars so one-line MCP output stays single-line
   return text.replace(/[\r\n\u0000-\u001f\u007f]/g, ' ').slice(0, maximum);
 };
 function bounded(text: string, maximum = MAX_TEXT_BYTES): string {
@@ -26,7 +27,7 @@ export function mcpTextResult(text: string, isError = false): McpTextResult {
   return { content: [{ type: 'text', text: bounded(text) }], ...(isError ? { isError: true } : {}) };
 }
 function parseStored(value: unknown): unknown {
-  if (typeof value !== 'string' || !/^[\s]*[\[{]/.test(value)) return value;
+  if (typeof value !== 'string' || !/^[\s]*[[{]/.test(value)) return value;
   try { return JSON.parse(value); } catch { return value; }
 }
 function rows(payload: unknown, key: string): unknown[] {

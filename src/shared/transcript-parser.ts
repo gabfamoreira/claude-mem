@@ -149,18 +149,34 @@ function scanTranscriptBackward<T>(
   return undefined;
 }
 
+/** Fields read off one parsed transcript JSONL line (shape varies per client). */
+interface TranscriptJsonlLine {
+  type?: unknown;
+  role?: unknown;
+  content?: unknown;
+  message?: { role?: unknown; content?: unknown; model?: unknown };
+  event?: { type?: unknown; part?: { type?: unknown; text?: unknown } };
+}
+
+/** A tool_use content block as read by synthesizeToolDescription. */
+interface TranscriptToolUseBlock {
+  type?: unknown;
+  name?: string;
+  input?: { file_path?: unknown; command?: unknown };
+}
+
 /**
  * Yield parsed JSONL entries from the last line to the first. Blank lines and
  * lines that fail to parse are skipped so callers only ever see objects.
  */
-function* parseJsonlLinesBackward(content: string): Generator<any> {
+function* parseJsonlLinesBackward(content: string): Generator<TranscriptJsonlLine> {
   const lines = content.split('\n');
   for (let i = lines.length - 1; i >= 0; i--) {
     const rawLine = lines[i];
     if (!rawLine) continue;
     // Tolerate truncated/malformed JSONL lines (crash mid-write, partial flush).
     // A bad line shouldn't crash the summarization pipeline — skip and move on.
-    let line: any;
+    let line: TranscriptJsonlLine;
     try {
       line = JSON.parse(rawLine);
     } catch {
@@ -278,7 +294,7 @@ function contentToText(msgContent: unknown): string | null {
   if (Array.isArray(msgContent)) {
     return msgContent
       .filter(
-        (c: any): c is { text: string } =>
+        (c: { text?: unknown; type?: unknown } | null): c is { text: string } =>
           !!c && typeof c === 'object' && typeof c.text === 'string' &&
           (c.type === undefined || c.type === 'text')
       )
@@ -294,7 +310,7 @@ function contentToText(msgContent: unknown): string | null {
  * - assistant: {"type":"context.append_loop_event","event":{"type":"content.part",
  *              ...,"part":{"type":"text","text":"..."}}}  (part.type "think" is reasoning — skipped)
  */
-function kimiWireRole(line: any): 'user' | 'assistant' | undefined {
+function kimiWireRole(line: TranscriptJsonlLine): 'user' | 'assistant' | undefined {
   if (line?.type === 'context.append_message') {
     const role = line.message?.role;
     return role === 'user' || role === 'assistant' ? role : undefined;
@@ -309,7 +325,7 @@ function kimiWireRole(line: any): 'user' | 'assistant' | undefined {
   return undefined;
 }
 
-function kimiWireText(line: any, role: 'user' | 'assistant'): string {
+function kimiWireText(line: TranscriptJsonlLine, role: 'user' | 'assistant'): string {
   if (role === 'user' && line?.type === 'context.append_message') {
     return contentToText(line.message?.content) ?? '';
   }
@@ -326,10 +342,10 @@ function kimiWireText(line: any, role: 'user' | 'assistant'): string {
  * tool_use only) still has something to summarize. A Bash command is clipped
  * to 60 characters; the observer already saw the full tool inputs.
  */
-function synthesizeToolDescription(msgContent: any[]): string {
-  const toolUses = msgContent.filter((c: any) => c?.type === 'tool_use');
+function synthesizeToolDescription(msgContent: TranscriptToolUseBlock[]): string {
+  const toolUses = msgContent.filter((c) => c?.type === 'tool_use');
   if (toolUses.length === 0) return '';
-  const labels = toolUses.map((t: any) => {
+  const labels = toolUses.map((t) => {
     const name: string = t.name ?? 'unknown';
     const input = t.input ?? {};
     if (input.file_path) return `${name}(${input.file_path})`;

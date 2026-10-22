@@ -27,7 +27,7 @@ async function enforceRateLimit(
   subject: string,
   res: Response,
   next: NextFunction,
-): Promise<Response | void> {
+): Promise<unknown> {
   const start = floorToWindow(Date.now(), opts.windowSec);
   const resetMs = start.getTime() + opts.windowSec * 1000;
   const result = await repo.hit({ subjectId: subject, windowStart: start, limit: opts.max });
@@ -71,7 +71,7 @@ async function enforceMonthlyQuota(
   teamId: string,
   res: Response,
   next: NextFunction,
-): Promise<Response | void> {
+): Promise<unknown> {
   const used = await repo.total({ teamId, kind: opts.kind, since: monthStartUtc(new Date()) });
   if (used >= opts.cap) {
     return res.status(402).json({

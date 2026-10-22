@@ -13,7 +13,7 @@ export function isPluginDisabledInClaudeSettings(): boolean {
     const settingsPath = join(claudeConfigDir, 'settings.json');
     if (!existsSync(settingsPath)) return false;
     const raw = readFileSync(settingsPath, 'utf-8');
-    const settings = parseJsonWithBom<Record<string, any>>(raw);
+    const settings = parseJsonWithBom<{ enabledPlugins?: Record<string, unknown> } | null>(raw);
     return settings?.enabledPlugins?.[PLUGIN_SETTINGS_KEY] === false;
   } catch (error: unknown) {
     logger.error('CONFIG', 'Failed to read Claude settings', { error: error instanceof Error ? error.message : String(error) });

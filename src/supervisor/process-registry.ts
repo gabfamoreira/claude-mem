@@ -1,4 +1,4 @@
-import { ChildProcess, spawnSync } from 'child_process';
+import { ChildProcess } from 'child_process';
 import { spawnHidden } from '../shared/spawn.js';
 import { existsSync, readFileSync } from 'fs';
 import path from 'path';

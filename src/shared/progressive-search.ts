@@ -170,6 +170,7 @@ function indexRows(rows: MemoryIndexRow[], maximum: number): MemoryIndexRow[] {
     ids.add(id);
     result.push({
       id, kind: row.kind, project: row.project,
+      // eslint-disable-next-line no-control-regex -- intentionally replaces C0 control chars in index titles
       title: shortText(String(row.title ?? "").replace(/[\u0000-\u001f]/g, " "), 240),
       createdAt: typeof row.createdAt === "number" && Number.isFinite(row.createdAt) ? row.createdAt : null,
       type: row.type == null ? null : shortText(String(row.type), 64),
@@ -367,10 +368,12 @@ export class ProgressiveSearch {
 }
 
 function oneLine(value: string): string {
+  // eslint-disable-next-line no-control-regex -- intentionally replaces control chars and line separators to force one line
   return value.replace(/[\u0000-\u001f\u007f\u2028\u2029]/g, " ").trim();
 }
 function readableText(value: unknown, bytes = 32 * 1024): string {
   if (typeof value !== "string") return "";
+  // eslint-disable-next-line no-control-regex -- intentionally strips control chars except tab/LF/CR from memory prose
   return shortText(value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, "").trim(), bytes);
 }
 /** Select useful memory prose and report any content-budget omissions. */
@@ -378,6 +381,7 @@ export function projectMemoryContent(payload: unknown): { text: string; truncate
   let truncated = false;
   const read = (value: unknown, bytes = 32 * 1024): string => {
     if (typeof value !== "string") return "";
+    // eslint-disable-next-line no-control-regex -- intentionally strips control chars except tab/LF/CR from memory prose
     const clean = value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, "").trim();
     const text = shortText(clean, bytes);
     if (text !== clean) truncated = true;

@@ -1,8 +1,7 @@
-import { join, dirname, basename, sep } from 'path';
+import { join, dirname, basename } from 'path';
 import { homedir } from 'os';
-import { existsSync, mkdirSync, readFileSync } from 'fs';
+import { existsSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
-import { SettingsDefaultsManager } from './SettingsDefaultsManager.js';
 import { readJsonFileWithBom } from './atomic-json.js';
 import { settingsTarget } from './settings-document.js';
 import { expandHome } from './expand-home.js';

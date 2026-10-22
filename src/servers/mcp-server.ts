@@ -4,7 +4,7 @@ const packageVersion = typeof __DEFAULT_PACKAGE_VERSION__ !== 'undefined' ? __DE
 
 import { logger } from '../utils/logger.js';
 
-console['log'] = (...args: any[]) => {
+console['log'] = (...args: unknown[]) => {
   logger.error('CONSOLE', 'Intercepted console output (MCP protocol protection)', undefined, { args });
 };
 
@@ -86,14 +86,29 @@ function errorIfWorkerScriptMissing(): void {
 }
 
 interface WorkerCallOptions {
-  query?: Record<string, any>;
-  body?: Record<string, any>;
+  query?: Record<string, unknown>;
+  body?: Record<string, unknown>;
   text?: boolean;
   /** Long corpus work: read the worker's SSE heartbeat stream instead of one JSON reply. */
   streamCorpusProgress?: boolean;
 }
 
 type WorkerToolResult = { content: Array<{ type: 'text'; text: string }>; isError?: boolean };
+
+/** Tool arguments as declared in each tool's inputSchema. */
+type SearchToolArgs = Record<string, unknown> & { query: string; limit?: number; project?: unknown };
+type SmartSearchArgs = { query: string; path?: string; max_results?: number; file_pattern?: string };
+type SmartUnfoldArgs = { file_path: string; symbol_name: string };
+type SmartOutlineArgs = { file_path: string };
+
+interface McpToolDefinition {
+  name: string;
+  description: string;
+  inputSchema: { type: string; properties?: Record<string, unknown>; required?: string[]; additionalProperties?: boolean };
+  annotations?: typeof READ_ONLY_TOOL_ANNOTATIONS;
+  /** Method syntax keeps the parameter bivariant so each tool can declare its own argument shape. */
+  handler(args: object): Promise<WorkerToolResult>;
+}
 
 function workerResultPurpose(endpoint: string, writes: boolean): McpTextPurpose {
   if (endpoint === '/api/memory/save') return 'save';
@@ -483,7 +498,7 @@ async function ensureWorkerConnection(): Promise<boolean> {
 // query_corpus, which appends to the corpus session) keep prompting.
 const READ_ONLY_TOOL_ANNOTATIONS = { readOnlyHint: true } as const;
 
-const tools = [
+const tools: McpToolDefinition[] = [
   {
     name: 'mem_search',
     description: 'Search memory through enforced progressive disclosure. Guided mode returns readable mem-search step 1 of 3 (index), a short continuation for step 2 (context), then step 3 (selected details). Follow the next-call instructions and choose only IDs shown in the previous result. Auto mode completes the same bounded pipeline in one call. Use this tool for every memory search.',
@@ -503,7 +518,7 @@ const tools = [
       additionalProperties: false,
     },
     annotations: READ_ONLY_TOOL_ANNOTATIONS,
-    handler: async (args: any) => {
+    handler: async (args: Record<string, unknown>) => {
       try {
         if (selectRuntime() === 'server') {
           throw new ProgressiveSearchError('unsupported_runtime', 'Use the hosted claude-mem MCP connection for server memory, or select worker runtime for local mem_search.');
@@ -538,7 +553,7 @@ const tools = [
       required: ['text'],
       additionalProperties: false,
     },
-    handler: async (args: any) => {
+    handler: async (args: Record<string, unknown>) => {
       if (selectRuntime() === 'server') return mcpTextResult('save_memory requires worker runtime. To save a note in the selected server, use observation_add with content and optional projectId.', true);
       return callWorker('/api/memory/save', { body: { ...args, project: args?.project || currentCheckout().primary } });
     },
@@ -605,7 +620,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       additionalProperties: true
     },
     annotations: READ_ONLY_TOOL_ANNOTATIONS,
-    handler: async (args: any) => {
+    handler: async (args: SearchToolArgs) => {
       // In server-beta runtime the local worker /api/search reads the local SQLite via
       // the Chroma-backed SearchOrchestrator. When the install runs server-beta (where
       // generated observations live in Postgres, not local SQLite) and Chroma is not
@@ -652,7 +667,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       additionalProperties: true
     },
     annotations: READ_ONLY_TOOL_ANNOTATIONS,
-    handler: async (args: any) => {
+    handler: async (args: Record<string, unknown>) => {
       return await callWorker('/api/timeline', { query: args });
     }
   },
@@ -672,7 +687,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       additionalProperties: true
     },
     annotations: READ_ONLY_TOOL_ANNOTATIONS,
-    handler: async (args: any) => {
+    handler: async (args: Record<string, unknown>) => {
       return await callWorker('/api/observations/batch', { body: args });
     }
   },
@@ -695,7 +710,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       additionalProperties: true
     },
     annotations: READ_ONLY_TOOL_ANNOTATIONS,
-    handler: async (args: any) => {
+    handler: async (args: Record<string, unknown>) => {
       return await callWorker('/api/tool-uses/batch', { body: args });
     }
   },
@@ -715,7 +730,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       required: ['list', 'fields'],
       additionalProperties: false,
     },
-    handler: async (args: any) => callWorker('/api/work-state/entries', {
+    handler: async (args: Record<string, unknown>) => callWorker('/api/work-state/entries', {
       body: { cwd: process.cwd(), list: args?.list, fields: args?.fields },
       text: true,
     }),
@@ -732,7 +747,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       additionalProperties: false,
     },
     annotations: READ_ONLY_TOOL_ANNOTATIONS,
-    handler: async (args: any) => callWorker('/api/work-state', {
+    handler: async (args: Record<string, unknown>) => callWorker('/api/work-state', {
       query: { cwd: process.cwd(), list: args?.list, includeClosed: args?.includeClosed },
       text: true,
     }),
@@ -758,7 +773,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       additionalProperties: false,
     },
     annotations: READ_ONLY_TOOL_ANNOTATIONS,
-    handler: async (args: any) => handleSessionStartContext(args ?? {}),
+    handler: async (args: SessionStartContextArgs) => handleSessionStartContext(args ?? {}),
   },
   // Phase 8 — observation_* tools backed by server REST core.
   {
@@ -776,7 +791,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       required: ['content'],
       additionalProperties: false,
     },
-    handler: async (args: any) => handleObservationAdd(args ?? {}),
+    handler: async (args: ObservationAddArgs) => handleObservationAdd(args ?? {}),
   },
   {
     name: 'observation_record_event',
@@ -798,7 +813,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       required: ['eventType'],
       additionalProperties: false,
     },
-    handler: async (args: any) => handleObservationRecordEvent(args ?? {}),
+    handler: async (args: ObservationRecordEventArgs) => handleObservationRecordEvent(args ?? {}),
   },
   {
     name: 'observation_search',
@@ -815,7 +830,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       additionalProperties: false,
     },
     annotations: READ_ONLY_TOOL_ANNOTATIONS,
-    handler: async (args: any) => handleObservationSearch(args ?? {}),
+    handler: async (args: ObservationSearchArgs) => handleObservationSearch(args ?? {}),
   },
   {
     name: 'observation_context',
@@ -831,7 +846,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       additionalProperties: false,
     },
     annotations: READ_ONLY_TOOL_ANNOTATIONS,
-    handler: async (args: any) => handleObservationContext(args ?? {}),
+    handler: async (args: ObservationContextArgs) => handleObservationContext(args ?? {}),
   },
   {
     name: 'observation_generation_status',
@@ -845,7 +860,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       additionalProperties: false,
     },
     annotations: READ_ONLY_TOOL_ANNOTATIONS,
-    handler: async (args: any) => handleObservationGenerationStatus(args ?? {}),
+    handler: async (args: ObservationGenerationStatusArgs) => handleObservationGenerationStatus(args ?? {}),
   },
   {
     name: 'smart_search',
@@ -873,7 +888,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       required: ['query']
     },
     annotations: READ_ONLY_TOOL_ANNOTATIONS,
-    handler: async (args: any) => {
+    handler: async (args: SmartSearchArgs) => {
       const rootDir = await resolveWithinWorkspace(args.path || process.cwd());
       const result = await searchCodebase(rootDir, args.query, {
         maxResults: args.max_results || 20,
@@ -903,7 +918,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       required: ['file_path', 'symbol_name']
     },
     annotations: READ_ONLY_TOOL_ANNOTATIONS,
-    handler: async (args: any) => {
+    handler: async (args: SmartUnfoldArgs) => {
       const filePath = await resolveWithinWorkspace(args.file_path);
       const content = await readFile(filePath, 'utf-8');
       const unfolded = unfoldSymbol(content, filePath, args.symbol_name);
@@ -944,7 +959,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       required: ['file_path']
     },
     annotations: READ_ONLY_TOOL_ANNOTATIONS,
-    handler: async (args: any) => {
+    handler: async (args: SmartOutlineArgs) => {
       const filePath = await resolveWithinWorkspace(args.file_path);
       const content = await readFile(filePath, 'utf-8');
       const parsed = parseFile(content, filePath);
@@ -981,7 +996,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       required: ['name'],
       additionalProperties: true
     },
-    handler: async (args: any) => {
+    handler: async (args: Record<string, unknown>) => {
       return await callWorker('/api/corpus', { body: args, streamCorpusProgress: true });
     }
   },
@@ -994,7 +1009,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       additionalProperties: true
     },
     annotations: READ_ONLY_TOOL_ANNOTATIONS,
-    handler: async (args: any) => {
+    handler: async (args: Record<string, unknown>) => {
       return await callWorker('/api/corpus', { query: args });
     }
   },
@@ -1009,7 +1024,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       required: ['name'],
       additionalProperties: true
     },
-    handler: async (args: any) => {
+    handler: async (args: Record<string, unknown>) => {
       const { name, ...rest } = args;
       if (typeof name !== 'string' || name.trim() === '') throw new Error('Missing required argument: name');
       return await callWorker(`/api/corpus/${encodeURIComponent(name)}/prime`, { body: rest, streamCorpusProgress: true });
@@ -1027,7 +1042,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       required: ['name', 'question'],
       additionalProperties: true
     },
-    handler: async (args: any) => {
+    handler: async (args: Record<string, unknown>) => {
       const { name, ...rest } = args;
       if (typeof name !== 'string' || name.trim() === '') throw new Error('Missing required argument: name');
       return await callWorker(`/api/corpus/${encodeURIComponent(name)}/query`, { body: rest, streamCorpusProgress: true });
@@ -1045,7 +1060,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       required: ['name'],
       additionalProperties: true
     },
-    handler: async (args: any) => {
+    handler: async (args: Record<string, unknown>) => {
       const { name, ...rest } = args;
       if (typeof name !== 'string' || name.trim() === '') throw new Error('Missing required argument: name');
       return await callWorker(`/api/corpus/${encodeURIComponent(name)}/rebuild`, { body: rest, streamCorpusProgress: true });
@@ -1062,7 +1077,7 @@ Use mem_search for every memory search. Guided mode returns readable mem-search 
       required: ['name'],
       additionalProperties: true
     },
-    handler: async (args: any) => {
+    handler: async (args: Record<string, unknown>) => {
       const { name, ...rest } = args;
       if (typeof name !== 'string' || name.trim() === '') throw new Error('Missing required argument: name');
       return await callWorker(`/api/corpus/${encodeURIComponent(name)}/reprime`, { body: rest, streamCorpusProgress: true });

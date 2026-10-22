@@ -54,7 +54,7 @@ export interface AtomicJsonWriteOptions {
 
 export function writeJsonFileAtomic(
   filepath: string,
-  data: any,
+  data: unknown,
   options: AtomicJsonWriteOptions = {}
 ): void {
   let resolved = filepath;

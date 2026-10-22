@@ -64,7 +64,7 @@ function coercePersistedSettingValue(value: unknown): unknown {
   return typeof value === 'boolean' ? String(value) : value;
 }
 
-function hasRetiredOpenRouterDefault(flatSettings: Record<string, any>): boolean {
+function hasRetiredOpenRouterDefault(flatSettings: Record<string, unknown>): boolean {
   const model = flatSettings.CLAUDE_MEM_OPENROUTER_MODEL;
   if (typeof model !== 'string' || !RETIRED_OPENROUTER_DEFAULT_MODELS.has(model.trim())) {
     return false;
@@ -700,11 +700,11 @@ export class SettingsDefaultsManager {
       }
 
       const settingsData = readFileSync(settingsPath, 'utf-8');
-      const settings = parseJsonWithBom<Record<string, any>>(settingsData);
+      const settings = parseJsonWithBom<Record<string, unknown>>(settingsData);
 
       // Where claude-mem's keys live: the same rule every settings writer uses
       // (settings-document.ts), so a value written anywhere is read back here.
-      let flatSettings: Record<string, any> = settingsTarget(settings);
+      let flatSettings: Record<string, unknown> = settingsTarget(settings);
       const hasNestedEnv = flatSettings !== settings;
       // Stale root CLAUDE_MEM_* copies beside a wrapped document are not the
       // user's peers: they are never kept, and never block the flatten below.
