@@ -223,7 +223,7 @@ async function flushSpool() {
   try {
     lines = readFileSync(claim, 'utf8').split('\n').filter(Boolean);
   } catch {
-    try { if (!existsSync(SPOOL)) renameSync(claim, SPOOL); } catch { /* best-effort restore; nothing else to do */ }
+    try { if (!existsSync(SPOOL)) renameSync(claim, SPOOL); } catch { /* best-effort restore; on failure the claim file keeps its events */ }
     return;
   }
   if (!lines.length) { try { rmSync(claim, { force: true }); } catch { /* best-effort cleanup of empty claim */ } return; }
@@ -251,7 +251,7 @@ async function flushSpool() {
       const merge = claim + '.merge';
       // rename is atomic: a concurrent appender either lands in the file
       // before the move (content travels with it) or creates a fresh spool
-      try { renameSync(SPOOL, merge); appendFileSync(claim, readFileSync(merge, 'utf8')); rmSync(merge, { force: true }); } catch { /* no replacement spool to merge */ }
+      try { renameSync(SPOOL, merge); appendFileSync(claim, readFileSync(merge, 'utf8')); rmSync(merge, { force: true }); } catch { /* ENOENT is expected (no replacement spool); any other failure leaves events in the .merge file */ }
       try {
         // restore without clobbering: wx fails if yet another hook recreated
         // the spool meanwhile — then append the claim instead (the ts sort at
@@ -262,7 +262,7 @@ async function flushSpool() {
       }
       rmSync(claim, { force: true });
     } catch {
-      try { if (!existsSync(SPOOL)) renameSync(claim, SPOOL); } catch { /* best-effort restore; nothing else to do */ }
+      try { if (!existsSync(SPOOL)) renameSync(claim, SPOOL); } catch { /* best-effort restore; on failure the claim file keeps its events */ }
     }
   }
 }
