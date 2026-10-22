@@ -19,7 +19,7 @@ import {
 } from './search/index.js';
 import type { SearchResults, StrategySearchResult, DateRange } from './search/index.js';
 import { assertSearchHasQueryOrFilter } from './search/SearchOrchestrator.js';
-import { isCategoryRequested, buildCategoryWhereFilter } from './search/types.js';
+import { isCategoryRequested, buildCategoryWhereFilter, type ChromaMetadata } from './search/types.js';
 import { ResultFormatter } from './search/ResultFormatter.js';
 import { ChromaUnavailableError } from './search/errors.js';
 import { buildProjectWhereFilter, projectReadKeysFor } from './search/project-where-filter.js';
@@ -69,9 +69,9 @@ export class SearchManager {
   private async queryChroma(
     query: string,
     limit: number,
-    whereFilter?: Record<string, any>,
+    whereFilter?: Record<string, unknown>,
     progress?: ChromaQueryProgress
-  ): Promise<{ ids: number[]; distances: number[]; metadatas: any[] }> {
+  ): Promise<{ ids: number[]; distances: number[]; metadatas: Array<ChromaMetadata | null> }> {
     if (!this.chromaSync) {
       return { ids: [], distances: [], metadatas: [] };
     }
@@ -85,8 +85,8 @@ export class SearchManager {
    * dual-project ($or: project + merged_into_project) scoping used by every
    * single-type hybrid search path.
    */
-  private buildDocTypeWhereFilter(docType: string, readKeys: string[], platformSource?: string): Record<string, any> {
-    const filters: Array<Record<string, any>> = [{ doc_type: docType }];
+  private buildDocTypeWhereFilter(docType: string, readKeys: string[], platformSource?: string): Record<string, unknown> {
+    const filters: Array<Record<string, unknown>> = [{ doc_type: docType }];
     if (readKeys.length > 0) {
       filters.push(buildProjectWhereFilter(readKeys));
     }
@@ -392,7 +392,7 @@ export class SearchManager {
    */
   private async performChromaSemanticSearch(
     query: string,
-    whereFilter: Record<string, any> | undefined,
+    whereFilter: Record<string, unknown> | undefined,
     options: any,
     scope: {
       obs_type: any;
@@ -583,10 +583,9 @@ export class SearchManager {
     }
     // PATH 2: CHROMA SEMANTIC SEARCH (query text + Chroma available)
     else if (this.chromaSync) {
-      let chromaSucceeded = false;
       logger.debug('SEARCH', 'Using ChromaDB semantic search', { typeFilter: category || 'all' });
 
-      const whereFilters: Array<Record<string, any>> = [];
+      const whereFilters: Array<Record<string, unknown>> = [];
       const categoryFilter = buildCategoryWhereFilter(category);
       if (categoryFilter) whereFilters.push(categoryFilter);
 
@@ -613,7 +612,6 @@ export class SearchManager {
 
       try {
         const chromaResults = await this.performChromaSemanticSearch(query, whereFilter, candidateOptions, { obs_type: effectiveObsType, concepts, files, searchObservations, searchSessions, searchPrompts });
-        chromaSucceeded = true;
         // Same fallback policy as the orchestrator pipeline: SQLite refills every requested
         // category Chroma left empty, or answers alone when Chroma left them all empty.
         const supplemented = await this.orchestrator.supplementEmptyCategories(
@@ -763,12 +761,11 @@ export class SearchManager {
       };
     }
 
-    interface CombinedResult {
-      type: 'observation' | 'session' | 'prompt';
-      data: any;
-      epoch: number;
-      created_at: string;
-    }
+    type CombinedResult = { epoch: number; created_at: string } & (
+      | { type: 'observation'; data: ObservationSearchResult }
+      | { type: 'session'; data: SessionSummarySearchResult }
+      | { type: 'prompt'; data: UserPromptSearchResult }
+    );
 
     const allResults: CombinedResult[] = [
       ...observations.map(obs => ({
@@ -910,7 +907,7 @@ export class SearchManager {
 
     let anchorId: string | number;
     let anchorEpoch: number;
-    let timelineData: any;
+    let timelineData: ReturnType<SessionStore['getTimelineAroundObservation']>;
 
     if (query) {
       let results: ObservationSearchResult[] = [];
@@ -1012,9 +1009,9 @@ export class SearchManager {
     }
 
     const items: TimelineItem[] = [
-      ...(timelineData.observations || []).map((obs: any) => ({ type: 'observation' as const, data: obs, epoch: obs.created_at_epoch })),
-      ...(timelineData.sessions || []).map((sess: any) => ({ type: 'session' as const, data: sess, epoch: sess.created_at_epoch })),
-      ...(timelineData.prompts || []).map((prompt: any) => ({ type: 'prompt' as const, data: prompt, epoch: prompt.created_at_epoch }))
+      ...(timelineData.observations || []).map((obs) => ({ type: 'observation' as const, data: obs, epoch: obs.created_at_epoch })),
+      ...(timelineData.sessions || []).map((sess) => ({ type: 'session' as const, data: sess, epoch: sess.created_at_epoch })),
+      ...(timelineData.prompts || []).map((prompt) => ({ type: 'prompt' as const, data: prompt, epoch: prompt.created_at_epoch }))
     ];
     items.sort((a, b) => a.epoch - b.epoch);
     const filteredItems = this.timelineService.filterByDepth(items, anchorId, anchorEpoch, depthBefore, depthAfter);

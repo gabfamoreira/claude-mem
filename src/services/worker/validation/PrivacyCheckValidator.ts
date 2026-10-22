@@ -24,7 +24,7 @@ export class PrivacyCheckValidator {
     promptNumber: number,
     operationType: 'observation' | 'summarize',
     sessionDbId: number,
-    additionalContext?: Record<string, any>
+    additionalContext?: Record<string, unknown>
   ): PromptPrivacyDecision {
     const userPrompt = store.getUserPrompt(contentSessionId, promptNumber, sessionDbId);
 

@@ -7,7 +7,6 @@ import { getPackageRoot, paths, expandTilde } from '../../../../shared/paths.js'
 import { logger } from '../../../../utils/logger.js';
 import { SettingsManager } from '../../SettingsManager.js';
 import { MIN_CONTEXT_WINDOW_TOKENS, OBSERVER_MAX_OUTPUT_TOKENS_BOUNDS } from '../../context-window.js';
-import { ModeManager } from '../../../domain/ModeManager.js';
 import { BaseRouteHandler } from '../BaseRouteHandler.js';
 import { validateBody } from '../middleware/validateBody.js';
 import { SettingsDefaultsManager } from '../../../../shared/SettingsDefaultsManager.js';

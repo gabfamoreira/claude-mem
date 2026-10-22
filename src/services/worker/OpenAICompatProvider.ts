@@ -31,8 +31,6 @@ import { resolveOpenAICompatPreset, type OpenAICompatPreset } from '../../shared
 import { buildKeyPool, resolvePoolKeys, retryPolicyForPool, withKeyPool } from '../../shared/api-key-pool.js';
 import { logger } from '../../utils/logger.js';
 import type { ActiveSession, ConversationMessage } from '../worker-types.js';
-import { DatabaseManager } from './DatabaseManager.js';
-import { SessionManager } from './SessionManager.js';
 import { randomUUID } from 'crypto';
 import { ClassifiedProviderError, rateLimitUntilNextKey } from './provider-errors.js';
 import type { PaidSendBudget } from './paid-send-budget.js';
@@ -428,10 +426,6 @@ export class OpenAICompatProvider extends OpenAICompatibleProvider<OpenAICompatC
   // Match OpenRouter: forward the empty batch so the parser/recovery path sees
   // it, rather than dropping it the way Gemini does.
   protected readonly forwardEmptyMessageResponse = true;
-
-  constructor(dbManager: DatabaseManager, sessionManager: SessionManager) {
-    super(dbManager, sessionManager);
-  }
 
   protected getConfig(): OpenAICompatConfig {
     return resolveOpenAICompatConfig(paths.settings());

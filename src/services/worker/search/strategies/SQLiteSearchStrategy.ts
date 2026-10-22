@@ -6,7 +6,8 @@ import {
   isCategoryRequested,
   ObservationSearchResult,
   SessionSummarySearchResult,
-  UserPromptSearchResult
+  UserPromptSearchResult,
+  type SearchOptions
 } from '../types.js';
 import { SessionSearch } from '../../../sqlite/SessionSearch.js';
 import { logger } from '../../../../utils/logger.js';
@@ -42,10 +43,6 @@ export class SQLiteSearchStrategy {
     const searchSessions = isCategoryRequested(searchType, 'sessions');
     const searchPrompts = isCategoryRequested(searchType, 'prompts');
 
-    const observations: ObservationSearchResult[] = [];
-    const sessions: SessionSummarySearchResult[] = [];
-    const prompts: UserPromptSearchResult[] = [];
-
     const baseOptions = { limit, offset, orderBy, project, projects, platformSource, dateRange };
 
     logger.debug('SEARCH', 'SQLiteSearchStrategy: SQLite query', {
@@ -71,7 +68,7 @@ export class SQLiteSearchStrategy {
     obsOptions: Record<string, any> | null,
     searchSessions: boolean,
     searchPrompts: boolean,
-    baseOptions: Record<string, any>
+    baseOptions: SearchOptions
   ): StrategySearchResult {
     let observations: ObservationSearchResult[] = [];
     let sessions: SessionSummarySearchResult[] = [];

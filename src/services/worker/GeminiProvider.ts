@@ -1,11 +1,9 @@
 
-import { DatabaseManager } from './DatabaseManager.js';
-import { SessionManager } from './SessionManager.js';
 import { logger } from '../../utils/logger.js';
 import { SettingsDefaultsManager } from '../../shared/SettingsDefaultsManager.js';
 import { describeNetworkFailure, isConnectionRefused } from '../../shared/network-failure.js';
 import { getCredential } from '../../shared/EnvManager.js';
-import { USER_SETTINGS_PATH, paths } from '../../shared/paths.js';
+import { paths } from '../../shared/paths.js';
 import { estimateTokens } from '../../shared/timeline-formatting.js';
 import type { ActiveSession, ConversationMessage } from '../worker-types.js';
 import { randomUUID } from 'crypto';
@@ -320,10 +318,6 @@ export class GeminiProvider extends OpenAICompatibleProvider<GeminiConfig> {
   protected readonly providerName = 'Gemini';
   protected readonly syntheticIdPrefix = 'gemini';
   protected readonly forwardEmptyMessageResponse = false;
-
-  constructor(dbManager: DatabaseManager, sessionManager: SessionManager) {
-    super(dbManager, sessionManager);
-  }
 
   protected getConfig(): GeminiConfig {
     return this.getGeminiConfig();

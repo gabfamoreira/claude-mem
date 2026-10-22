@@ -62,10 +62,8 @@ import {
   removePidFileIfOwner,
   getPlatformTimeout,
   runOneTimeCwdRemap,
-  cleanStalePidFile,
   verifyWorkerPidFileOwnership,
   spawnDaemon,
-  touchPidFile,
   pinDaemonWorkingDirectory
 } from './infrastructure/ProcessManager.js';
 import { runOneTimeV12_4_3Cleanup } from './infrastructure/CleanupV12_4_3.js';
@@ -75,7 +73,6 @@ import {
   isPortInUse,
   probePortBind,
   waitForHealth,
-  waitForReadiness,
   waitForPortFree,
   httpShutdown
 } from './infrastructure/HealthMonitor.js';
@@ -113,12 +110,11 @@ import { SessionManager } from './worker/SessionManager.js';
 import { SSEBroadcaster } from './worker/SSEBroadcaster.js';
 import { ClaudeProvider, classifyClaudeError } from './worker/ClaudeProvider.js';
 import type { WorkerRef } from './worker/agents/types.js';
-import { GeminiProvider, classifyGeminiError } from './worker/GeminiProvider.js';
-import { OpenRouterProvider, classifyOpenRouterError } from './worker/OpenRouterProvider.js';
+import { GeminiProvider } from './worker/GeminiProvider.js';
+import { OpenRouterProvider } from './worker/OpenRouterProvider.js';
 import { OpenAICompatProvider } from './worker/OpenAICompatProvider.js';
 import { getSelectedProvider } from './worker/provider-dispatch.js';
 import { CodexProvider } from './worker/CodexProvider.js';
-import { ClassifiedProviderError, isClassified, type ProviderErrorClass } from './worker/provider-errors.js';
 import { PaginationHelper } from './worker/PaginationHelper.js';
 import { SettingsManager } from './worker/SettingsManager.js';
 import { SearchManager } from './worker/SearchManager.js';

@@ -28,7 +28,6 @@ import {
   shouldAbortForQuota,
 } from './RateLimitStore.js';
 
-// @ts-ignore - Agent SDK types may not be available
 import { query } from '@anthropic-ai/claude-agent-sdk';
 import { buildHardenedSdkOptions } from '../../sdk/hardened-options.js';
 import { describeObserverOutputShape, formatEmptyOutputReason } from '../../sdk/output-classifier.js';
@@ -564,11 +563,11 @@ export class ClaudeProvider {
           // turn that never produces a text frame gets the same idle hand-off
           // once, from the `result` branch below.
           const hasTextBlock = Array.isArray(content)
-            ? content.some((c: any) => c?.type === 'text')
+            ? content.some((c: { type?: string } | null) => c?.type === 'text')
             : typeof content === 'string';
           const emptyOutputReason = formatEmptyOutputReason(describeObserverOutputShape(content));
           const textContent = Array.isArray(content)
-            ? content.filter((c: any) => c.type === 'text').map((c: any) => c.text).join('\n')
+            ? content.filter((c: { type?: string }) => c.type === 'text').map((c: { text?: string }) => c.text).join('\n')
             : typeof content === 'string' ? content : '';
 
           const responseSize = textContent.length;
@@ -602,7 +601,7 @@ export class ClaudeProvider {
               sessionId: session.sessionDbId,
               promptNumber: session.lastPromptNumber,
               blockTypes: Array.isArray(content)
-                ? [...new Set(content.map((c: any) => String(c?.type)))].join(',')
+                ? [...new Set(content.map((c: { type?: unknown } | null) => String(c?.type)))].join(',')
                 : typeof content,
             });
             continue;
@@ -676,7 +675,7 @@ export class ClaudeProvider {
           // between consecutive results. The assistant message's
           // usage.output_tokens is an early-streaming placeholder and must
           // never feed telemetry.
-          const resultUsage = (message as any).usage as {
+          const resultUsage = message.usage as {
             input_tokens?: number;
             cache_creation_input_tokens?: number;
             cache_read_input_tokens?: number;
@@ -719,7 +718,7 @@ export class ClaudeProvider {
           turnInsertedObservationIds = [];
           turnSummaryId = null;
 
-          const totalCostUsd = (message as any).total_cost_usd as number | undefined;
+          const totalCostUsd = message.total_cost_usd as number | undefined;
           let turnCostUsd: number | undefined;
           if (typeof totalCostUsd === 'number') {
             const prior = session.lastResultTotalCostUsd ?? 0;
@@ -746,8 +745,8 @@ export class ClaudeProvider {
             });
           }
 
-          const resultSubtype = (message as any).subtype as string | undefined;
-          const resultIsError = (message as any).is_error === true || resultSubtype !== 'success';
+          const resultSubtype = message.subtype as string | undefined;
+          const resultIsError = message.is_error === true || resultSubtype !== 'success';
 
           // The turn is over and the model never emitted text. Only a
           // successful turn means the model read the batch — forward its empty
@@ -948,9 +947,9 @@ export class ClaudeProvider {
       let out = '';
       for await (const message of result) {
         if (message.type === 'assistant') {
-          const content = (message as any).message.content;
+          const content = message.message.content;
           out += Array.isArray(content)
-            ? content.filter((c: any) => c.type === 'text').map((c: any) => c.text).join('\n')
+            ? content.filter((c: { type?: string }) => c.type === 'text').map((c: { text?: string }) => c.text).join('\n')
             : typeof content === 'string' ? content : '';
         }
       }

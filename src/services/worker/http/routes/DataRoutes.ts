@@ -919,7 +919,7 @@ export class DataRoutes extends BaseRouteHandler {
         }
       }
 
-      const result = store.importUserPrompt(promptToImport as any);
+      const result = store.importUserPrompt(promptToImport as Parameters<typeof store.importUserPrompt>[0]);
       if (result.imported) {
         stats.promptsImported++;
       } else {

@@ -234,7 +234,7 @@ function compactEditOutput(fields: { toolInput: unknown; toolOutput: unknown }, 
     for (const h of output.structuredPatch) {
       if (!h || Object.keys(h).some(k => !['oldStart', 'oldLines', 'newStart', 'newLines', 'lines'].includes(k))
           || !['oldStart', 'oldLines', 'newStart', 'newLines'].every(k => Number.isSafeInteger(h[k]) && h[k] >= 0)
-          || !Array.isArray(h.lines) || !h.lines.every((line: unknown) => typeof line === 'string' && (/^[ +\-]/.test(line) || line === '\\ No newline at end of file'))
+          || !Array.isArray(h.lines) || !h.lines.every((line: unknown) => typeof line === 'string' && (/^[ +-]/.test(line) || line === '\\ No newline at end of file'))
           || h.lines.filter((l: string) => l[0] === ' ' || l[0] === '-').length !== h.oldLines
           || h.lines.filter((l: string) => l[0] === ' ' || l[0] === '+').length !== h.newLines) return fields.toolOutput;
       const before = h.lines.filter((l: string) => l[0] === ' ' || l[0] === '-').map((l: string) => l.slice(1)).join('\n');

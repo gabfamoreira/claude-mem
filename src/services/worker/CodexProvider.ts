@@ -217,7 +217,7 @@ export class CodexProvider extends OpenAICompatibleProvider<CodexConfig> {
   protected getConfig(): CodexConfig {
     const settings = SettingsDefaultsManager.loadFromFile(USER_SETTINGS_PATH);
     const codexPath = settings.CLAUDE_MEM_CODEX_PATH.trim() || 'codex';
-    if (process.platform === 'win32' && /[\0\r\n&|<>()^%!\"]/.test(codexPath)) {
+    if (process.platform === 'win32' && /[\0\r\n&|<>()^%!"]/.test(codexPath)) {
       throw new Error('CLAUDE_MEM_CODEX_PATH contains unsafe shell characters');
     }
     return {

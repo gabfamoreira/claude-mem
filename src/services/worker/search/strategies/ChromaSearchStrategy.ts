@@ -75,7 +75,7 @@ export class ChromaSearchStrategy {
 
   private async executeChromaSearch(
     query: string,
-    whereFilter: Record<string, any> | undefined,
+    whereFilter: Record<string, unknown> | undefined,
     options: {
       searchObservations: boolean;
       searchSessions: boolean;
@@ -164,8 +164,8 @@ export class ChromaSearchStrategy {
     };
   }
 
-  private buildWhereFilter(searchType: SearchSelection, readKeys: string[], platformSource?: string): Record<string, any> | undefined {
-    const filters: Array<Record<string, any>> = [];
+  private buildWhereFilter(searchType: SearchSelection, readKeys: string[], platformSource?: string): Record<string, unknown> | undefined {
+    const filters: Array<Record<string, unknown>> = [];
 
     const categoryFilter = buildCategoryWhereFilter(searchType);
     if (categoryFilter) filters.push(categoryFilter);

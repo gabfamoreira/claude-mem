@@ -10,7 +10,6 @@ import { findClaudeExecutable } from '../../../shared/find-claude-executable.js'
 import { sanitizeEnv } from '../../../supervisor/env-sanitizer.js';
 import { resolveTierAlias } from '../model-aliases.js';
 
-// @ts-ignore - Agent SDK types may not be available
 import { query } from '@anthropic-ai/claude-agent-sdk';
 import { buildHardenedSdkOptions } from '../../../sdk/hardened-options.js';
 
@@ -208,8 +207,8 @@ export class KnowledgeAgent {
         }
         if (msg.type === 'assistant') {
           const text = msg.message.content
-            .filter((b: any) => b.type === 'text')
-            .map((b: any) => b.text)
+            .filter((b: { type?: string }) => b.type === 'text')
+            .map((b: { text?: string }) => b.text)
             .join('');
           answer = text;
         }

@@ -136,7 +136,7 @@ export class PaginationHelper {
       FROM session_summaries ss
       JOIN sdk_sessions s ON ss.memory_session_id = s.memory_session_id
     `;
-    const params: any[] = [];
+    const params: Array<string | number> = [];
 
     const conditions: string[] = [];
 
@@ -192,7 +192,7 @@ export class PaginationHelper {
       FROM user_prompts up
       JOIN sdk_sessions s ON up.session_db_id = s.id
     `;
-    const params: any[] = [];
+    const params: Array<string | number> = [];
 
     const conditions: string[] = [];
 

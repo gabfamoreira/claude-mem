@@ -241,7 +241,7 @@ export class CorpusRoutes extends BaseRouteHandler {
     logger.info('SEARCH', 'Building corpus', { name, project, filterKeys: Object.keys(filter) });
     const corpus = await this.corpusBuilder.build(name, description || '', filter);
 
-    const { observations, ...metadata } = corpus;
+    const { observations: _observations, ...metadata } = corpus;
     return { status: 200, body: metadata };
   }));
 
@@ -261,7 +261,7 @@ export class CorpusRoutes extends BaseRouteHandler {
       return;
     }
 
-    const { observations, ...metadata } = corpus;
+    const { observations: _observations, ...metadata } = corpus;
     res.json(metadata);
   });
 
@@ -306,7 +306,7 @@ export class CorpusRoutes extends BaseRouteHandler {
     }
 
     this.corpusStore.write(corpus);
-    const { observations, ...metadata } = corpus;
+    const { observations: _observations, ...metadata } = corpus;
     return { status: 200, body: metadata };
   }));
 

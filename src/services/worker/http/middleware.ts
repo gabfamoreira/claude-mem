@@ -33,7 +33,7 @@ export function createMiddleware(): RequestHandler[] {
     logger.debug('HTTP', `→ ${req.method} ${req.path}`, { requestId }, bodySummary);
 
     const originalSend = res.send.bind(res);
-    res.send = function(body: any) {
+    res.send = function(body?: unknown) {
       const duration = Date.now() - start;
       logger.debug('HTTP', `← ${res.statusCode} ${req.path}`, { requestId, duration: `${duration}ms` });
       return originalSend(body);
@@ -508,7 +508,7 @@ export function createRemoteReadOnlyGuard(options: RemoteReadOnlyOptions): Reque
   };
 }
 
-export function summarizeRequestBody(method: string, path: string, body: any): string {
+export function summarizeRequestBody(method: string, path: string, body: { tool_name?: string; tool_input?: unknown } | null | undefined): string {
   if (!body || Object.keys(body).length === 0) return '';
 
   if (path.includes('/init')) {

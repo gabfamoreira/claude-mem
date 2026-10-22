@@ -210,9 +210,7 @@ export async function startGeneratorWithProvider(
   // once on the Anthropic plan after a cmem fallback, or after a rate limit's
   // Retry-After. The finally schedules it.
   let scheduledResume: { afterMs: number; source: string } | null = null;
-  let generatorPromise: Promise<void>;
-
-  generatorPromise = agent.startSession(session, workerService)
+  const generatorPromise: Promise<void> = agent.startSession(session, workerService)
     .catch(async error => {
       const classified = isClassified(error) ? error : null;
       // Since #3999 a provider PAUSES on a classified error by aborting the

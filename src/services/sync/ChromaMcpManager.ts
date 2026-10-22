@@ -2,8 +2,7 @@
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
-import { execFile, execSync, spawn, type ChildProcess } from 'child_process';
-import { promisify } from 'util';
+import { execSync, spawn, type ChildProcess } from 'child_process';
 import path from 'path';
 import os from 'os';
 import fs from 'fs';
@@ -21,8 +20,6 @@ import { captureProcessName, captureProcessStartToken, isSameProcess, isSameProc
 import { clearDependencyStatus, recordChromaVectorSearchUnavailable, recordUvxVectorSearchUnavailable } from '../../shared/dependency-health.js';
 import { ChromaUnavailableError } from '../worker/search/errors.js';
 import type { ChromaCollectionDrop } from './ChromaSync.js';
-
-const execFileAsync = promisify(execFile);
 
 const CHROMA_MCP_CLIENT_NAME = 'claude-mem-chroma';
 const CHROMA_MCP_CLIENT_VERSION = '1.0.0';
@@ -599,8 +596,7 @@ export class ChromaMcpManager {
   }
 
   private scheduleUnexpectedCloseCleanup(tracked: TrackedChild | null, writerLock: ChromaWriterLockHandle | null): void {
-    let cleanup: Promise<void>;
-    cleanup = this.cleanupUnexpectedCloseSubprocess(tracked, writerLock).finally(() => {
+    const cleanup: Promise<void> = this.cleanupUnexpectedCloseSubprocess(tracked, writerLock).finally(() => {
       if (this.unexpectedCloseCleanup === cleanup) {
         this.unexpectedCloseCleanup = null;
       }
@@ -1590,8 +1586,7 @@ export class ChromaMcpManager {
     logger.warn('CHROMA_MCP', `chroma-mcp did not answer "${toolName}" in time and no write is in flight; restarting it`);
     // Waiters on the close cleanup expect it never to reject, like the
     // unexpected-close cleanup it shares the slot with.
-    let restart: Promise<void>;
-    restart = this.disposeCurrentSubprocess()
+    const restart: Promise<void> = this.disposeCurrentSubprocess()
       .catch((error: unknown) => {
         logger.warn('CHROMA_MCP', 'Restarting a hung chroma-mcp did not finish cleanly', {
           error: error instanceof Error ? error.message : String(error)
@@ -1628,7 +1623,7 @@ export class ChromaMcpManager {
     let collections: number | undefined;
 
     try {
-      const listResult: any = await this.callTool('chroma_list_collections', { limit: 100 });
+      const listResult = await this.callTool('chroma_list_collections', { limit: 100 }) as unknown[] | { collections?: unknown[] } | null;
       if (Array.isArray(listResult)) {
         collections = listResult.length;
       } else if (listResult && Array.isArray(listResult.collections)) {

@@ -11,7 +11,6 @@ import { logger } from '../../utils/logger.js';
 import { clearSyncHealth, defaultSyncHealthFilePath } from '../../shared/sync-health.js';
 import { purgeUndrainableSyncOutbox } from '../sync/outbox-purge.js';
 import { purgeLinkedToolUses, resolveToolUsesRetentionDays } from '../sqlite/tool-uses.js';
-import type { DBSession } from '../worker-types.js';
 
 export class DatabaseManager {
   private db: Database | null = null;

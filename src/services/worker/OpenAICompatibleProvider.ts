@@ -1,4 +1,3 @@
-import { assistantText } from '../../shared/assistant-text.js';
 export { assistantText } from '../../shared/assistant-text.js';
 import { createHash } from 'crypto';
 import { DatabaseManager } from './DatabaseManager.js';

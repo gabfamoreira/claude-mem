@@ -195,6 +195,13 @@ const CHROMA_OVERFETCH_CAP = 2000;
 
 type MetadataPredicate = (metadata: Record<string, unknown>) => boolean;
 
+/** Raw `chroma_query_documents` response shape (one query text, so one row per field). */
+type ChromaQueryResponse = {
+  ids?: string[][];
+  metadatas?: Array<Array<Record<string, unknown> | null>>;
+  distances?: number[][];
+} | null | undefined;
+
 /**
  * Build a client-side equivalent of a chroma `where` clause, or null if the
  * clause uses anything we do not evaluate identically to chroma.
@@ -1101,7 +1108,7 @@ export class ChromaSync {
         offset: offset,
         where: { project },
         include: ['metadatas']
-      }) as any;
+      }) as { ids?: string[]; metadatas?: Array<Record<string, unknown> | null> } | null;
 
       for (const id of result?.ids ?? []) documentIds.add(id);
       const metadatas = result?.metadatas || [];
@@ -1695,14 +1702,14 @@ export class ChromaSync {
   async queryChroma(
     query: string,
     limit: number,
-    whereFilter?: Record<string, any>,
+    whereFilter?: Record<string, unknown>,
     progress?: ChromaQueryProgress
   ): Promise<{ ids: number[]; distances: number[]; metadatas: any[] }> {
     if (progress) progress.exhausted = false;
     await this.ensureCollectionExists();
 
-    let results: any;
-    const runQuery = async (nResults: number, where: Record<string, any> | undefined, include: string[]) => {
+    let results: ChromaQueryResponse;
+    const runQuery = async (nResults: number, where: Record<string, unknown> | undefined, include: string[]) => {
       const chromaMcp = ChromaMcpManager.getInstance();
       return await chromaMcp.callTool('chroma_query_documents', {
         collection_name: this.collectionName,
@@ -1710,7 +1717,7 @@ export class ChromaSync {
         n_results: nResults,
         ...(where && { where }),
         include
-      });
+      }) as ChromaQueryResponse;
     };
 
     try {
@@ -1726,13 +1733,13 @@ export class ChromaSync {
         );
         // Only ids, metadatas and distances are read below, so the (up to
         // CHROMA_OVERFETCH_CAP) document texts are not worth shipping over MCP.
-        const raw: any = await runQuery(overfetch, undefined, ['metadatas', 'distances']);
+        const raw = await runQuery(overfetch, undefined, ['metadatas', 'distances']);
         const rawIds = raw?.ids?.[0] || [];
         const rawMetadatas = raw?.metadatas?.[0] || [];
         const rawDistances = raw?.distances?.[0] || [];
 
         const keptIds: string[] = [];
-        const keptMetadatas: any[] = [];
+        const keptMetadatas: Array<Record<string, unknown> | null> = [];
         const keptDistances: number[] = [];
         for (let i = 0; i < rawIds.length; i++) {
           if (!predicate(rawMetadatas[i] ?? {})) continue;
@@ -1795,14 +1802,14 @@ export class ChromaSync {
     return this.deduplicateQueryResults(results);
   }
 
-  private deduplicateQueryResults(results: any): { ids: number[]; distances: number[]; metadatas: any[] } {
+  private deduplicateQueryResults(results: ChromaQueryResponse): { ids: number[]; distances: number[]; metadatas: Array<Record<string, unknown> | null> } {
     const ids: number[] = [];
     const seen = new Set<string>();
     const docIds = results?.ids?.[0] || [];
     const rawMetadatas = results?.metadatas?.[0] || [];
     const rawDistances = results?.distances?.[0] || [];
 
-    const metadatas: any[] = [];
+    const metadatas: Array<Record<string, unknown> | null> = [];
     const distances: number[] = [];
 
     for (let i = 0; i < docIds.length; i++) {
@@ -2012,7 +2019,7 @@ export class ChromaSync {
           collection_name: this.collectionName,
           where: { sqlite_id: { $in: idBatch } },
           include: ['metadatas']
-        }) as { ids?: string[]; metadatas?: Array<Record<string, any> | null> };
+        }) as { ids?: string[]; metadatas?: Array<Record<string, unknown> | null> };
 
         // The client-side doc_type filter needs one metadata entry per id; a
         // short or missing list would silently skip documents while callers
@@ -2032,7 +2039,7 @@ export class ChromaSync {
         // documents already carry merged_into_project, so only write the ones
         // whose value would change.
         const staleIds: string[] = [];
-        const staleMetadatas: Array<Record<string, any>> = [];
+        const staleMetadatas: Array<Record<string, unknown>> = [];
         keep.forEach(k => {
           const docId = allIds[k];
           const current = allMetadatas?.[k] ?? {};
@@ -2040,7 +2047,7 @@ export class ChromaSync {
             totalAlreadyPatched++;
             return;
           }
-          const merged: Record<string, any> = {
+          const merged: Record<string, unknown> = {
             ...current,
             merged_into_project: mergedIntoProject
           };

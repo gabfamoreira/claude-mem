@@ -109,8 +109,8 @@ export class HybridSearchStrategy {
     return sorted.slice(0, limit);
   }
 
-  private buildObservationWhereFilter(readKeys: string[], platformSource?: string): Record<string, any> {
-    const filters: Array<Record<string, any>> = [{ doc_type: 'observation' }];
+  private buildObservationWhereFilter(readKeys: string[], platformSource?: string): Record<string, unknown> {
+    const filters: Array<Record<string, unknown>> = [{ doc_type: 'observation' }];
     if (readKeys.length > 0) {
       filters.push(buildProjectWhereFilter(readKeys));
     }

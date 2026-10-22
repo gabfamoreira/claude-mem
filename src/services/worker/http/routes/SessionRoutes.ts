@@ -17,7 +17,6 @@ import { getSelectedProvider, recordCmemFallbackIfEligible, releaseCmemGatewayPr
 import type { WorkerService } from '../../../worker-service.js';
 import { BaseRouteHandler } from '../BaseRouteHandler.js';
 import { SessionEventBroadcaster } from '../../events/SessionEventBroadcaster.js';
-import { PrivacyCheckValidator } from '../../validation/PrivacyCheckValidator.js';
 import { MEDIA_PROMPT_PLACEHOLDER } from '../../../sqlite/prompt-storage.js';
 import { SettingsDefaultsManager } from '../../../../shared/SettingsDefaultsManager.js';
 import { USER_SETTINGS_PATH, ensureObserverSessionsDir } from '../../../../shared/paths.js';
@@ -613,6 +612,7 @@ export class SessionRoutes extends BaseRouteHandler {
     project: z.string().optional(),
     prompt: z.string().optional(),
     // A host's real user-turn ID, scoped by platform + content session.
+    // eslint-disable-next-line no-control-regex -- rejects IDs containing ASCII control characters (U+0000-U+001F, U+007F) by design
     nativePromptId: z.string().min(1).max(256).regex(/^[^\s\x00-\x1f\x7f]+$/).optional(),
     platformSource: z.string().optional(),
     customTitle: z.string().optional(),

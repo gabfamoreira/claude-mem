@@ -9,8 +9,6 @@ import { USER_SETTINGS_PATH } from '../../shared/paths.js';
 import { clearProFallbackOnGatewaySuccess, isCmemGatewayUrl, isKeyAllowedForEndpoint, keysForEndpoint } from '../../shared/cmem-gateway.js';
 import { logger } from '../../utils/logger.js';
 import type { ActiveSession, ConversationMessage } from '../worker-types.js';
-import { DatabaseManager } from './DatabaseManager.js';
-import { SessionManager } from './SessionManager.js';
 import { randomUUID } from 'crypto';
 import { ClassifiedProviderError, rateLimitUntilNextKey, type ProviderErrorClass } from './provider-errors.js';
 import type { PaidSendBudget } from './paid-send-budget.js';
@@ -732,10 +730,6 @@ export class OpenRouterProvider extends OpenAICompatibleProvider<OpenRouterConfi
   protected readonly providerName = 'OpenRouter';
   protected readonly syntheticIdPrefix = 'openrouter';
   protected readonly forwardEmptyMessageResponse = true;
-
-  constructor(dbManager: DatabaseManager, sessionManager: SessionManager) {
-    super(dbManager, sessionManager);
-  }
 
   protected getConfig(): OpenRouterConfig {
     return resolveOpenRouterConfig();
