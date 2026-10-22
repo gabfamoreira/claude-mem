@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'bun:test';
+import { expect, it } from 'bun:test';
 import { createServer } from 'node:http';
 import { connect } from 'node:net';
 import type { Response } from 'express';

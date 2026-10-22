@@ -32,6 +32,7 @@ describe('ServerGenerationJobPayloadSchema', () => {
   });
 
   it('rejects payload missing team_id', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- rest-destructuring omits the field under test
     const { team_id, ...rest } = validEvent;
     const result = ServerGenerationJobPayloadSchema.safeParse(rest);
     expect(result.success).toBe(false);
@@ -42,24 +43,28 @@ describe('ServerGenerationJobPayloadSchema', () => {
   });
 
   it('rejects payload missing project_id', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- rest-destructuring omits the field under test
     const { project_id, ...rest } = validEvent;
     const result = ServerGenerationJobPayloadSchema.safeParse(rest);
     expect(result.success).toBe(false);
   });
 
   it('rejects payload missing generation_job_id', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- rest-destructuring omits the field under test
     const { generation_job_id, ...rest } = validEvent;
     const result = ServerGenerationJobPayloadSchema.safeParse(rest);
     expect(result.success).toBe(false);
   });
 
   it('rejects payload missing source_adapter', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- rest-destructuring omits the field under test
     const { source_adapter, ...rest } = validEvent;
     const result = ServerGenerationJobPayloadSchema.safeParse(rest);
     expect(result.success).toBe(false);
   });
 
   it('requires the api_key_id field to be present (null is allowed)', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- rest-destructuring omits the field under test
     const { api_key_id, ...withoutKey } = validEvent;
     const result = ServerGenerationJobPayloadSchema.safeParse(withoutKey);
     expect(result.success).toBe(false);
@@ -69,6 +74,7 @@ describe('ServerGenerationJobPayloadSchema', () => {
   });
 
   it('requires the actor_id field to be present (null is allowed)', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- rest-destructuring omits the field under test
     const { actor_id, ...withoutActor } = validEvent;
     const result = ServerGenerationJobPayloadSchema.safeParse(withoutActor);
     expect(result.success).toBe(false);

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'bun:test';
 import { PrivacyCheckValidator } from '../../src/services/worker/validation/PrivacyCheckValidator';
 
 function storeReturning(value: string | null) {
-  return { getUserPrompt: (_s: string, _n: number) => value } as any;
+  return { getUserPrompt: () => value } as any;
 }
 
 describe('PrivacyCheckValidator (issue #2794)', () => {

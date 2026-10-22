@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, mock } from 'bun:test';
-import type { Job, Processor, QueueOptions, WorkerOptions } from 'bullmq';
+import type { Job, Processor, WorkerOptions } from 'bullmq';
 import { ServerJobQueue } from '../../../src/server/jobs/ServerJobQueue.js';
 import type { RedisQueueConfig } from '../../../src/server/queue/redis-config.js';
 
@@ -29,13 +29,13 @@ interface FakeWorkerState {
 }
 
 function buildFakeQueue(state: FakeQueueState) {
-  return (_name: string, _options: QueueOptions) => ({
+  return () => ({
     add: async (name: string, payload: unknown, opts?: { jobId?: string }) => {
       state.added.push({ name, payload, jobId: opts?.jobId });
       return { id: opts?.jobId ?? 'job_anon' } as Job<unknown>;
     },
-    getJob: async (_id: string) => null,
-    getJobCounts: async (..._states: string[]) => ({
+    getJob: async () => null,
+    getJobCounts: async () => ({
       waiting: 1,
       active: 0,
       delayed: 0,

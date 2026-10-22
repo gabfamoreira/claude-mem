@@ -4,7 +4,7 @@ import { OpenAICompatibleProvider, type ProviderQueryResult } from '../../src/se
 import { CodexProvider } from '../../src/services/worker/CodexProvider.js';
 import type { DatabaseManager } from '../../src/services/worker/DatabaseManager.js';
 import type { SessionManager } from '../../src/services/worker/SessionManager.js';
-import type { ActiveSession, ConversationMessage } from '../../src/services/worker-types.js';
+import type { ActiveSession } from '../../src/services/worker-types.js';
 
 const mockMode = {
   name: 'code',
@@ -69,7 +69,7 @@ class TestProvider extends OpenAICompatibleProvider<{ apiKey: string; model: str
     return new Error('missing key');
   }
 
-  protected async query(_history: ConversationMessage[], _config: { apiKey: string; model: string }): Promise<ProviderQueryResult> {
+  protected async query(): Promise<ProviderQueryResult> {
     this.queries++;
     return { content: observationXml, tokensUsed: 100 };
   }

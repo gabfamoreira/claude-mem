@@ -53,7 +53,6 @@ mock.module('@modelcontextprotocol/sdk/client/stdio.js', () => ({
 
 mock.module('@modelcontextprotocol/sdk/client/index.js', () => ({
   Client: class FakeClient {
-    constructor() {}
     async connect() {}
     async callTool() {
       return { content: [{ type: 'text', text: '{}' }] };

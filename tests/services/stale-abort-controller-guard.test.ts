@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, mock, spyOn } from 'bun:test';
+import { describe, it, expect } from 'bun:test';
 
 describe('Stale AbortController Guard (#1099)', () => {
   describe('ActiveSession.lastGeneratorActivity', () => {

@@ -6,7 +6,7 @@ import { OpenRouterProvider } from '../../src/services/worker/OpenRouterProvider
 test('field deadline cancels real OpenRouter fetch and prevents retries', async () => {
   let requests = 0;
   let disconnected = false;
-  const server = createServer((req, res) => {
+  const server = createServer((req) => {
     requests++;
     // Do not resume() the body: on older Bun versions that keeps the keep-alive
     // socket open and `res.on('close')` does not fire within the observation

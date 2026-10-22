@@ -332,7 +332,7 @@ describe('ResponseProcessor', () => {
       );
 
       expect(mockStoreObservations).toHaveBeenCalledTimes(1);
-      const [memorySessionId, project, observations, summary] =
+      const [memorySessionId, project, observations] =
         mockStoreObservations.mock.calls[0];
       expect(memorySessionId).toBe('memory-session-456');
       expect(project).toBe('repo-b/worktree');

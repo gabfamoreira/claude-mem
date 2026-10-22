@@ -43,7 +43,7 @@ afterEach(() => {
 
 function exitDeps(sm: SessionManager) {
   const finalizeSession = mock(() => Promise.resolve());
-  const resumeGenerator = mock((_source: string) => {});
+  const resumeGenerator = mock(() => {});
   return {
     finalizeSession,
     resumeGenerator,

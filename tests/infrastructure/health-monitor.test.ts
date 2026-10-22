@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, mock, spyOn } from 'bun:test';
+import { describe, it, expect, afterEach, mock, spyOn } from 'bun:test';
 import net from 'net';
 import {
   isPortInUse,
@@ -29,7 +29,7 @@ describe('HealthMonitor', () => {
 
     it('should return true for occupied port (EADDRINUSE)', async () => {
       const createServerMock = mock(() => ({
-        once: mock((event: string, cb: Function) => {
+        once: mock((event: string, cb: (...args: unknown[]) => unknown) => {
           if (event === 'error') {
             setTimeout(() => cb({ code: 'EADDRINUSE' }), 0);
           }
@@ -48,9 +48,9 @@ describe('HealthMonitor', () => {
     });
 
     it('should return false for free port (listening succeeds)', async () => {
-      const closeMock = mock((cb: Function) => cb());
+      const closeMock = mock((cb: (...args: unknown[]) => unknown) => cb());
       const createServerMock = mock(() => ({
-        once: mock((event: string, cb: Function) => {
+        once: mock((event: string, cb: (...args: unknown[]) => unknown) => {
           if (event === 'listening') {
             setTimeout(() => cb(), 0);
           }
@@ -72,10 +72,10 @@ describe('HealthMonitor', () => {
 
     it('should honor configured worker host when probing port occupancy', async () => {
       process.env.CLAUDE_MEM_WORKER_HOST = '127.0.0.2';
-      const closeMock = mock((cb: Function) => cb());
+      const closeMock = mock((cb: (...args: unknown[]) => unknown) => cb());
       const listenMock = mock(() => {});
       const createServerMock = mock(() => ({
-        once: mock((event: string, cb: Function) => {
+        once: mock((event: string, cb: (...args: unknown[]) => unknown) => {
           if (event === 'listening') {
             setTimeout(() => cb(), 0);
           }
@@ -100,7 +100,7 @@ describe('HealthMonitor', () => {
     it('should treat other socket errors as in use (indeterminate is never free)', async () => {
       // EACCES / EADDRNOTAVAIL are 'unbindable', not unknown; see classifyPortOccupancy.
       const createServerMock = mock(() => ({
-        once: mock((event: string, cb: Function) => {
+        once: mock((event: string, cb: (...args: unknown[]) => unknown) => {
           if (event === 'error') {
             setTimeout(() => cb({ code: 'EMFILE' }), 0);
           }
@@ -148,7 +148,7 @@ describe('HealthMonitor', () => {
         global.fetch = mock(() => Promise.reject(new Error('fetch failed')));
 
         const createServerMock = mock(() => ({
-          once: mock((event: string, cb: Function) => {
+          once: mock((event: string, cb: (...args: unknown[]) => unknown) => {
             if (event === 'error') {
               setTimeout(() => cb({ code: 'EADDRINUSE' }), 0);
             }
@@ -191,7 +191,7 @@ describe('HealthMonitor', () => {
         global.fetch = fetchMock as any;
 
         const createServerMock = mock(() => ({
-          once: mock((event: string, cb: Function) => {
+          once: mock((event: string, cb: (...args: unknown[]) => unknown) => {
             if (event === 'error') setTimeout(() => cb({ code: 'EADDRINUSE' }), 0);
           }),
           listen: mock(() => {}),
@@ -224,9 +224,9 @@ describe('HealthMonitor', () => {
 
         global.fetch = mock(() => Promise.reject(new Error('ECONNREFUSED')));
 
-        const closeMock = mock((cb: Function) => cb());
+        const closeMock = mock((cb: (...args: unknown[]) => unknown) => cb());
         const createServerMock = mock(() => ({
-          once: mock((event: string, cb: Function) => {
+          once: mock((event: string, cb: (...args: unknown[]) => unknown) => {
             if (event === 'listening') {
               setTimeout(() => cb(), 0);
             }
@@ -643,11 +643,11 @@ describe('HealthMonitor', () => {
   describe('waitForPortFree', () => {
     it('should return true immediately when port is already free', async () => {
       const createServerMock = mock(() => ({
-        once: mock((event: string, cb: Function) => {
+        once: mock((event: string, cb: (...args: unknown[]) => unknown) => {
           if (event === 'listening') setTimeout(() => cb(), 0);
         }),
         listen: mock(() => {}),
-        close: mock((cb: Function) => cb())
+        close: mock((cb: (...args: unknown[]) => unknown) => cb())
       }));
       const spy = spyOn(net, 'createServer').mockImplementation(createServerMock as any);
 
@@ -662,7 +662,7 @@ describe('HealthMonitor', () => {
 
     it('should timeout when port remains occupied', async () => {
       const createServerMock = mock(() => ({
-        once: mock((event: string, cb: Function) => {
+        once: mock((event: string, cb: (...args: unknown[]) => unknown) => {
           if (event === 'error') setTimeout(() => cb({ code: 'EADDRINUSE' }), 0);
         }),
         listen: mock(() => {})
@@ -707,7 +707,7 @@ describe('HealthMonitor', () => {
       const fetchMock = mock(() => Promise.resolve({ ok: false, status: 503 } as Response));
       global.fetch = fetchMock;
       const createServerMock = mock(() => ({
-        once: mock((event: string, cb: Function) => {
+        once: mock((event: string, cb: (...args: unknown[]) => unknown) => {
           if (event === 'error') setTimeout(() => cb({ code: 'EADDRINUSE' }), 0);
         }),
         listen: mock(() => {}),
@@ -734,7 +734,7 @@ describe('HealthMonitor', () => {
     it('should succeed when port becomes free', async () => {
       let callCount = 0;
       const spy = spyOn(net, 'createServer').mockImplementation(() => ({
-        once: mock((event: string, cb: Function) => {
+        once: mock((event: string, cb: (...args: unknown[]) => unknown) => {
           callCount++;
           if (callCount < 3) {
             if (event === 'error') setTimeout(() => cb({ code: 'EADDRINUSE' }), 0);
@@ -743,7 +743,7 @@ describe('HealthMonitor', () => {
           }
         }),
         listen: mock(() => {}),
-        close: mock((cb: Function) => cb())
+        close: mock((cb: (...args: unknown[]) => unknown) => cb())
       } as any));
 
       const result = await waitForPortFree(37777, 5000);
@@ -755,11 +755,11 @@ describe('HealthMonitor', () => {
 
     it('should use default timeout when not specified', async () => {
       const createServerMock = mock(() => ({
-        once: mock((event: string, cb: Function) => {
+        once: mock((event: string, cb: (...args: unknown[]) => unknown) => {
           if (event === 'listening') setTimeout(() => cb(), 0);
         }),
         listen: mock(() => {}),
-        close: mock((cb: Function) => cb())
+        close: mock((cb: (...args: unknown[]) => unknown) => cb())
       }));
       const spy = spyOn(net, 'createServer').mockImplementation(createServerMock as any);
 

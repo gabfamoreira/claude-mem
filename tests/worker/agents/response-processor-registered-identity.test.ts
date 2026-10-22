@@ -11,7 +11,7 @@ import type { SSEEventPayload } from '../../../src/services/worker/agents/types.
 describe('response metadata uses the registered memory identity', () => {
   for (const kind of ['observation', 'summary'] as const) for (const rekey of [false, true]) {
     it(`uses the stored identity for ${kind} metadata${rekey ? " after an explicit rekey" : ""}`, async () => {
-      const cleanup: Array<() => void | Promise<unknown>> = [];
+      const cleanup: Array<() => unknown> = [];
       try {
         const settings = spyOn(SettingsDefaultsManager, 'loadFromFile').mockImplementation(() => ({
           ...SettingsDefaultsManager.getAllDefaults(), CLAUDE_MEM_FOLDER_CLAUDEMD_ENABLED: 'false',
@@ -79,7 +79,7 @@ describe('response metadata uses the registered memory identity', () => {
   }
 
   it('keeps prior receipts discoverable when a fresh provider registers its session identity', async () => {
-    const cleanup: Array<() => void | Promise<unknown>> = [];
+    const cleanup: Array<() => unknown> = [];
     try {
       const settings = spyOn(SettingsDefaultsManager, 'loadFromFile').mockImplementation(() => ({
         ...SettingsDefaultsManager.getAllDefaults(), CLAUDE_MEM_FOLDER_CLAUDEMD_ENABLED: 'false',

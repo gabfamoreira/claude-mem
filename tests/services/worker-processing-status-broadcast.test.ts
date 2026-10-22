@@ -9,7 +9,7 @@ function fixture() {
   // a database, installing signal handlers, or starting an HTTP server.
   const worker = Object.create(WorkerService.prototype) as any;
   const status = { queueDepth: 3, activeSessions: 1 };
-  const broadcast = mock((_event: unknown) => {});
+  const broadcast = mock(() => {});
   Object.assign(worker, {
     sessionManager: {
       getTotalQueueDepth: () => status.queueDepth,

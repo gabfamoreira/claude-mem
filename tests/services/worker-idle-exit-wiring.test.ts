@@ -15,7 +15,7 @@ function fixture(options: { shutdownSettles?: boolean } = {}) {
   const signals = { inFlightRequests: 0, viewerClients: 0 };
   // Unless a test opts in, the shutdown never settles, so the idle path's
   // process.exit can never run after the mocks are restored.
-  const shutdown = mock((_reason: string) => options.shutdownSettles
+  const shutdown = mock(() => options.shutdownSettles
     ? Promise.resolve()
     : new Promise<void>(() => {}));
   Object.assign(worker, {

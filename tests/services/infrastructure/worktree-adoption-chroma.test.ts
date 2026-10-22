@@ -35,10 +35,10 @@ let mainRepoForCleanup: string | undefined;
 afterEach(() => {
   chromaCalls.length = 0;
   if (mainRepoForCleanup && existsSync(mainRepoForCleanup)) {
-    try { git(mainRepoForCleanup, 'worktree', 'remove', '--force', path.join(tempRoot!, 'summary-worktree')); } catch {}
+    try { git(mainRepoForCleanup, 'worktree', 'remove', '--force', path.join(tempRoot!, 'summary-worktree')); } catch { /* best-effort cleanup; the worktree may already be removed */ }
   }
   if (tempRoot) {
-    try { rmSync(tempRoot, { recursive: true, force: true }); } catch {}
+    try { rmSync(tempRoot, { recursive: true, force: true }); } catch { /* best-effort cleanup; the temp dir may already be gone */ }
   }
   tempRoot = undefined;
   mainRepoForCleanup = undefined;

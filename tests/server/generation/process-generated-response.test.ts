@@ -84,7 +84,7 @@ describe('processGeneratedResponse + markGenerationFailed', () => {
     if (client) {
       try {
         await client.query(`DROP SCHEMA IF EXISTS ${quoteIdentifier(schemaName)} CASCADE`);
-      } catch {}
+      } catch { /* best-effort teardown; the schema may already be gone */ }
       client.release();
     }
     pool.removeAllListeners('connect');

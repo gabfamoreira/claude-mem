@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterAll, mock } from 'bun:test';
+import { describe, it, expect, beforeEach, afterAll } from 'bun:test';
 import { mkdtempSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';

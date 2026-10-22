@@ -5,7 +5,6 @@ import { tmpdir } from 'os';
 import { delimiter, join } from 'path';
 import { ChromaMcpManager } from '../../../src/services/sync/ChromaMcpManager.js';
 import {
-  codexSpawn,
   isExecutableFile,
   isUsableCodexBundle,
   lookupCodexOnMacOS,

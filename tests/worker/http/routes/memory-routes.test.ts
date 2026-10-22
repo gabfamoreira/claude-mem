@@ -83,7 +83,7 @@ describe('MemoryRoutes — POST /api/memory/save (#2116)', () => {
       storeObservationCalls.push(args);
       return { id: 42, createdAtEpoch: 1234567890 };
     });
-    mockGetOrCreateManualSession = mock((project: string, _platformSource?: string) => `manual-${project}`);
+    mockGetOrCreateManualSession = mock((project: string) => `manual-${project}`);
 
     const mockDbManager = {
       getSessionStore: () => ({

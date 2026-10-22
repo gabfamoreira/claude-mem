@@ -1,4 +1,4 @@
-import { describe, it, expect, mock, beforeEach } from 'bun:test';
+import { describe, it, expect, mock } from 'bun:test';
 import type { Request, Response } from 'express';
 import { CorpusRoutes } from '../../../../src/services/worker/http/routes/CorpusRoutes.js';
 

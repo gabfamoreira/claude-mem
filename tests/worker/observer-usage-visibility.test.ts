@@ -8,7 +8,7 @@ import {
 } from '../../src/services/worker/observer-usage.js';
 import { SettingsDefaultsManager } from '../../src/shared/SettingsDefaultsManager.js';
 import { logger } from '../../src/utils/logger.js';
-import type { ActiveSession, ConversationMessage } from '../../src/services/worker-types.js';
+import type { ActiveSession } from '../../src/services/worker-types.js';
 
 const mockMode = {
   name: 'code',
@@ -68,7 +68,7 @@ class RealUsageProvider extends OpenAICompatibleProvider<{ apiKey: string; model
     return new Error('missing key');
   }
 
-  protected async query(_history: ConversationMessage[]): Promise<ProviderQueryResult> {
+  protected async query(): Promise<ProviderQueryResult> {
     if (this.failOnQuery) {
       throw new Error('gateway exploded');
     }
@@ -90,10 +90,6 @@ class EmptyObservationUsageProvider extends OpenAICompatibleProvider<{ apiKey: s
   protected readonly syntheticIdPrefix = 'test';
   protected readonly forwardEmptyMessageResponse = false;
 
-  constructor(dbManager: any, sessionManager: any) {
-    super(dbManager, sessionManager);
-  }
-
   protected getConfig() {
     return { apiKey: 'test-api-key', model: 'session-model' };
   }
@@ -102,7 +98,7 @@ class EmptyObservationUsageProvider extends OpenAICompatibleProvider<{ apiKey: s
     return new Error('missing key');
   }
 
-  protected async query(_history: ConversationMessage[]): Promise<ProviderQueryResult> {
+  protected async query(): Promise<ProviderQueryResult> {
     return { content: '', tokensUsed: 1000, inputTokens: 990, outputTokens: 10 };
   }
 

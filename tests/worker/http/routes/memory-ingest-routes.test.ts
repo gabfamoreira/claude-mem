@@ -13,7 +13,6 @@ import { logger } from '../../../../src/utils/logger.js';
 let server: Server | undefined;
 let port = 0;
 let outside: string;
-let storeCalls = 0;
 let loggerSpies: Array<ReturnType<typeof spyOn>> = [];
 
 beforeEach(async () => {
@@ -22,13 +21,11 @@ beforeEach(async () => {
     spyOn(logger, 'warn').mockImplementation(() => {}),
     spyOn(logger, 'error').mockImplementation(() => {}),
   ];
-  storeCalls = 0;
   outside = mkdtempSync(join(tmpdir(), 'memory-ingest-outside-'));
   writeFileSync(join(outside, 'notes.md'), '# private\n\nnot a Claude Code memory');
 
   const dbManager = {
     getSessionStore: () => {
-      storeCalls++;
       return {};
     },
     getChromaSync: () => null,

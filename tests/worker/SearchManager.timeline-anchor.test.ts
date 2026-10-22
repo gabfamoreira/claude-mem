@@ -27,7 +27,7 @@ mock.module('../../src/services/domain/ModeManager.js', () => ({
         observation_concepts: [],
       }),
       getObservationTypes: () => [{ id: 'discovery', icon: 'I' }],
-      getTypeIcon: (_type: string) => 'I',
+      getTypeIcon: () => 'I',
       getWorkEmoji: () => 'W',
     }),
   },

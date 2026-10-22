@@ -1,5 +1,4 @@
-import { describe, it, expect, mock } from 'bun:test';
-import os from 'os';
+import { describe, it, expect } from 'bun:test';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 

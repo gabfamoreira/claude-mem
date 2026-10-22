@@ -179,7 +179,7 @@ function makeStoreFromRows(
             return [];
           },
           finalize: () => {},
-          get: (...params: Array<string | number>) => {
+          get: () => {
             if (query.includes('COUNT(*) as count FROM observations')) {
               return { count: observationRows.length };
             }

@@ -75,6 +75,7 @@ function fakeQuery(args: any) {
   const include: string[] = args.include ?? ['documents', 'metadatas', 'distances'];
   return {
     ids: [hits.map(d => d.id)],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- rest-destructuring strips id from the metadata object
     metadatas: include.includes('metadatas') ? [hits.map(({ id: _id, ...metadata }) => metadata)] : null,
     distances: include.includes('distances') ? [hits.map((_, i) => i * 0.001)] : null,
     documents: include.includes('documents') ? [hits.map(d => d.id)] : null,

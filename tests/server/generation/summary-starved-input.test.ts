@@ -229,7 +229,7 @@ describe('the summary loader feeds the WHOLE session', () => {
 
   afterEach(async () => {
     if (client) {
-      try { await client.query(`DROP SCHEMA IF EXISTS ${quoteIdentifier(schemaName)} CASCADE`); } catch {}
+      try { await client.query(`DROP SCHEMA IF EXISTS ${quoteIdentifier(schemaName)} CASCADE`); } catch { /* best-effort teardown; the schema may already be gone */ }
       client.release();
     }
     await pool.end();

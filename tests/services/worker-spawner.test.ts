@@ -29,7 +29,7 @@ const processManager = {
   spawnDaemon: mock(() => 2147483647),
   touchPidFile: mock(() => {}),
   readPidFile: mock((): { pid: number; port: number; startedAt: string } | null => null),
-  removePidFileIfOwner: mock((_expectedOwnerPid: number | null) => {}),
+  removePidFileIfOwner: mock(() => {}),
   probeWorkerBootFailure: mock((): string | undefined => undefined),
 };
 
@@ -67,7 +67,7 @@ mock.module('../../src/shared/port-reclaim.js', () => portReclaim);
 // of sending it, and keep its durable markers in a throwaway data dir.
 const realCliTelemetrySnapshot = { ...realCliTelemetry };
 const cliTelemetry = {
-  captureCliEvent: mock(async (_event: string, _props?: Record<string, unknown>) => {}),
+  captureCliEvent: mock(async () => {}),
 };
 mock.module('../../src/services/telemetry/cli-telemetry.js', () => cliTelemetry);
 const TEST_DATA_DIR = mkdtempSync(join(tmpdir(), 'cmem-spawner-'));

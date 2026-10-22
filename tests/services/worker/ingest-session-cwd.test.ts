@@ -16,10 +16,10 @@ let tempRoot: string | undefined;
 let store: SessionStore | undefined;
 
 afterEach(() => {
-  try { store?.close(); } catch {}
+  try { store?.close(); } catch { /* best-effort cleanup; the store may already be closed */ }
   store = undefined;
   if (tempRoot) {
-    try { rmSync(tempRoot, { recursive: true, force: true }); } catch {}
+    try { rmSync(tempRoot, { recursive: true, force: true }); } catch { /* best-effort cleanup; the temp dir may already be gone */ }
   }
   tempRoot = undefined;
 });

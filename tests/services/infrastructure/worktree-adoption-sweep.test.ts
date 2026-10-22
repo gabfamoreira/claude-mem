@@ -18,7 +18,7 @@ let tempRoot: string | undefined;
 
 afterEach(() => {
   if (tempRoot) {
-    try { rmSync(tempRoot, { recursive: true, force: true }); } catch {}
+    try { rmSync(tempRoot, { recursive: true, force: true }); } catch { /* best-effort cleanup; the temp dir may already be gone */ }
   }
   tempRoot = undefined;
 });

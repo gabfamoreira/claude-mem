@@ -1019,8 +1019,7 @@ describe('ProcessManager', () => {
     it('should have SIGHUP listeners registered (integration check)', () => {
       if (process.platform === 'win32') return;
 
-      let received = false;
-      const testHandler = () => { received = true; };
+      const testHandler = () => {};
 
       process.on('SIGHUP', testHandler);
       expect(process.listenerCount('SIGHUP')).toBeGreaterThanOrEqual(1);

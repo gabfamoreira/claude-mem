@@ -28,6 +28,7 @@ let scriptedError: unknown = null;
 
 mock.module('@anthropic-ai/claude-agent-sdk', () => ({
   ...actualAgentSdk,
+  // eslint-disable-next-line require-yield -- the stub only throws; it must stay an async generator so query() returns an AsyncIterable
   query: () => (async function* () {
     if (scriptedError) throw scriptedError;
   })(),

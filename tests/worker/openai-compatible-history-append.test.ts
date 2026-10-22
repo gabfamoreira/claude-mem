@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from 'bun:te
 import { ModeManager } from '../../src/services/domain/ModeManager.js';
 import { OpenAICompatibleProvider, type ProviderQueryResult } from '../../src/services/worker/OpenAICompatibleProvider.js';
 import { SettingsDefaultsManager } from '../../src/shared/SettingsDefaultsManager.js';
-import type { ActiveSession, ConversationMessage } from '../../src/services/worker-types.js';
+import type { ActiveSession } from '../../src/services/worker-types.js';
 
 const mockMode = {
   name: 'code',
@@ -65,7 +65,7 @@ class TestProvider extends OpenAICompatibleProvider<{ apiKey: string; model: str
     return new Error('missing key');
   }
 
-  protected async query(_history: ConversationMessage[]): Promise<ProviderQueryResult> {
+  protected async query(): Promise<ProviderQueryResult> {
     this.queries++;
     return { content: this.replies.shift() ?? '' };
   }

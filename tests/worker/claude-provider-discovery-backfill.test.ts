@@ -124,7 +124,7 @@ function createHarness(session: ActiveSession) {
   let claimedMessages: Array<{ type: string; tool_name?: string; tool_input?: unknown }> = [
     { type: 'observation', tool_name: 'Read', tool_input: { file_path: 'src/gateway.ts' } },
   ];
-  const storeObservations = mock((..._args: unknown[]) => ({
+  const storeObservations = mock(() => ({
     observationIds: [41],
     mergedIntoExisting: [false],
     insertedObservationIds: [41],

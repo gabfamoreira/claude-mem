@@ -20,7 +20,7 @@ describe('getTimelineAroundTimestamp / getTimelineAroundObservation (epoch ancho
     store.close();
     try {
       require('fs').unlinkSync(testDbPath);
-    } catch (e) {
+    } catch {
       // Ignore cleanup errors
     }
   });

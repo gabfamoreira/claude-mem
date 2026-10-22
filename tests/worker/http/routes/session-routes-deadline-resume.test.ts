@@ -108,7 +108,7 @@ describe('deadline-paused observer resumes without a new hook (#4204)', () => {
         scheduled.push({ delayMs, run: callback });
         return handle;
       },
-      clearTimeout(_timer: ReturnType<typeof setTimeout>): void {},
+      clearTimeout(): void {},
     };
     const sessionManager = new SessionManager({} as any, transportClock);
     // An earlier hook created this session. Keep the real manager and buffer;
@@ -730,7 +730,7 @@ describe('deadline-paused observer resumes without a new hook (#4204)', () => {
         scheduled.push({ delayMs, run: callback });
         return { unref() {} } as ReturnType<typeof setTimeout>;
       },
-      clearTimeout(_timer: ReturnType<typeof setTimeout>): void {},
+      clearTimeout(): void {},
     };
     const sessionManager = new SessionManager({} as any, transportClock);
     const sessions = (sessionManager as unknown as { sessions: Map<number, ActiveSession> }).sessions;

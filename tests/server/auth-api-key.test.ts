@@ -388,7 +388,7 @@ describe('server API key auth', () => {
     const req: any = {
       ip: '10.0.0.5',
       socket: {},
-      header: (_name: string) => undefined,
+      header: () => undefined,
     };
     const res: any = {
       statusCode: 200,

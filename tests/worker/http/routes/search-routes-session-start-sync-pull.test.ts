@@ -24,7 +24,7 @@ async function runSessionStart(socketLive: boolean) {
   const syncClient = {
     isSocketLive: () => socketLive,
     // A hub that never answers: SessionStart must not wait on it.
-    pullOnce: mock((_options?: { timeoutMs?: number }) => {
+    pullOnce: mock(() => {
       events.push('pull');
       return new Promise<void>(() => {});
     }),

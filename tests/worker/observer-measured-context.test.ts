@@ -1,5 +1,5 @@
 import { afterAll, afterEach, beforeEach, describe, expect, it, mock, spyOn } from 'bun:test';
-import type { ActiveSession, ConversationMessage } from '../../src/services/worker-types.js';
+import type { ActiveSession } from '../../src/services/worker-types.js';
 import type { ProviderQueryResult } from '../../src/services/worker/OpenAICompatibleProvider.js';
 
 // #2957: the generation budget reads the context the provider actually

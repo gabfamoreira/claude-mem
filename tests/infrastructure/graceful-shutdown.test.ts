@@ -7,8 +7,7 @@ import type {
   GracefulShutdownConfig,
   ShutdownableService,
   CloseableClient,
-  CloseableDatabase,
-  PidInfo
+  CloseableDatabase
 } from '../../src/services/infrastructure/index.js';
 
 // ── Data-dir isolation (Phase 6, worker-restart plan) ──────────────────────
