@@ -73,7 +73,7 @@ export class ModeManager {
       const baseValue = base[key];
 
       if (this.isPlainObject(overrideValue) && this.isPlainObject(baseValue)) {
-        result[key] = this.deepMerge(baseValue, overrideValue as any);
+        result[key] = this.deepMerge(baseValue, overrideValue as Partial<T[Extract<keyof T, string>]>);
       } else {
         result[key] = overrideValue as T[Extract<keyof T, string>];
       }

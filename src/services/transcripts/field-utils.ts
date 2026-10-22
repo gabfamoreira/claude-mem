@@ -32,11 +32,11 @@ function parsePath(path: string): Array<string | number> {
 export function getValueByPath(input: unknown, path: string): unknown {
   if (!path) return undefined;
   const tokens = parsePath(path);
-  let current: any = input;
+  let current: unknown = input;
 
   for (const token of tokens) {
     if (current === null || current === undefined) return undefined;
-    current = current[token as any];
+    current = (current as Record<string | number, unknown>)[token];
   }
 
   return current;
@@ -49,15 +49,15 @@ function isEmptyValue(value: unknown): boolean {
 function resolveFromContext(path: string, ctx: ResolveContext): unknown {
   if (path.startsWith('$watch.')) {
     const key = path.slice('$watch.'.length);
-    return (ctx.watch as any)[key];
+    return ctx.watch[key as keyof WatchTarget];
   }
   if (path.startsWith('$schema.')) {
     const key = path.slice('$schema.'.length);
-    return (ctx.schema as any)[key];
+    return ctx.schema[key as keyof TranscriptSchema];
   }
   if (path.startsWith('$session.')) {
     const key = path.slice('$session.'.length);
-    return ctx.session ? (ctx.session as any)[key] : undefined;
+    return ctx.session ? ctx.session[key] : undefined;
   }
   if (path === '$cwd') return ctx.watch.workspace;
   if (path === '$project') return ctx.watch.project;

@@ -466,10 +466,11 @@ function writeAntigravityHooksAndSetupContext(mergedHooks: AntigravityHooksConfi
 // (status check + uninstall) that don't go through writeMcpJsonConfig. A
 // genuinely empty file has nothing to lose; readJsonSafe's "corrupt" guard
 // stays fully intact for real (non-empty) malformed content.
-function readMcpConfigTolerantly(mcpConfigPath: string): Record<string, any> {
+type McpConfigFile = { mcpServers?: Record<string, unknown>; [key: string]: unknown };
+function readMcpConfigTolerantly(mcpConfigPath: string): McpConfigFile {
   if (!existsSync(mcpConfigPath)) return {};
   if (readFileSync(mcpConfigPath, 'utf-8').trim() === '') return {};
-  return readJsonSafe<Record<string, any>>(mcpConfigPath, {});
+  return readJsonSafe<McpConfigFile>(mcpConfigPath, {});
 }
 
 function removeClaudeMemFromMcpConfig(mcpConfigPath: string): boolean {

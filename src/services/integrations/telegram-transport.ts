@@ -1,4 +1,4 @@
-const MARKDOWN_V2_RESERVED = /[_*\[\]()~`>#+\-=|{}.!\\]/g;
+const MARKDOWN_V2_RESERVED = /[_*[\]()~`>#+\-=|{}.!\\]/g;
 
 export function escapeMarkdownV2(value: string): string {
   return value.replace(MARKDOWN_V2_RESERVED, '\\$&');

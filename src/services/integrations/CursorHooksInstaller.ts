@@ -365,7 +365,7 @@ export function checkCursorHooksStatus(): number {
       console.log(`${loc.name}: Installed`);
       console.log(`   Config: ${hooksJson}`);
 
-      let hooksContent: any = null;
+      let hooksContent: { hooks?: { beforeSubmitPrompt?: Array<{ command?: string }> } } | null = null;
       try {
         hooksContent = JSON.parse(readFileSync(hooksJson, 'utf-8'));
       } catch (error) {

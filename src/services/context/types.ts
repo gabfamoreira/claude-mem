@@ -32,7 +32,7 @@ export interface ContextInput {
    * The fitter's limit shrinks by what the placeholder can grow by.
    */
   timePlaceholders?: boolean;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface ContextConfig {

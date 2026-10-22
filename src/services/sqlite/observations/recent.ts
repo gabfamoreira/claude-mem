@@ -1,6 +1,5 @@
 
 import { Database } from 'bun:sqlite';
-import { logger } from '../../../utils/logger.js';
 
 export function getFirstObservationCreatedAt(db: Database): string | null {
   const stmt = db.prepare(`

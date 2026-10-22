@@ -444,7 +444,7 @@ export const telemetryBuffer = {
    */
   safetyFlush(): void {
     const now = Date.now();
-    for (const [sessionDbId, bucket] of Array.from(sessionCompressedBuckets.entries())) {
+    for (const [, bucket] of Array.from(sessionCompressedBuckets.entries())) {
       const overAge = now - bucket.windowStartTs >= SAFETY_MAX_AGE_MS;
       const overCount = bucket.records.length >= SAFETY_MAX_RECORDS;
       if (!overAge && !overCount) continue;

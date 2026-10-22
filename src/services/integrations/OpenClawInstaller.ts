@@ -8,7 +8,6 @@ import {
   mkdirSync,
   cpSync,
   rmSync,
-  unlinkSync,
 } from 'fs';
 import { logger } from '../../utils/logger.js';
 import { getWorkerPort } from '../../shared/worker-utils.js';

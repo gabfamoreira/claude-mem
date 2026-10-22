@@ -128,7 +128,7 @@ export function discoverT3CodeProviders(settingsPath: string, baseEnv: NodeJS.Pr
       try { command = managedCodexCommand(settingsPath); }
       catch (error) { setupError = error instanceof Error ? error.message : String(error); }
     }
-    if (process.platform === 'win32' && !/[\/\\]/.test(command)) command = lookupWindowsCommand(command) ?? (/\.(?:cmd|bat|exe|com)$/i.test(command) ? command : `${command}.cmd`);
+    if (process.platform === 'win32' && !/[/\\]/.test(command)) command = lookupWindowsCommand(command) ?? (/\.(?:cmd|bat|exe|com)$/i.test(command) ? command : `${command}.cmd`);
     providers.push({ id, driver, command, homePath, environment, launchArgs: stringSetting(config, 'launchArgs'), setupError });
   }
   return providers;

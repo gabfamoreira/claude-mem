@@ -201,8 +201,8 @@ export interface ActiveSession {
 export interface PendingMessage {
   type: 'observation' | 'summarize';
   tool_name?: string;
-  tool_input?: any;
-  tool_response?: any;
+  tool_input?: unknown;
+  tool_response?: unknown;
   prompt_number?: number;
   cwd?: string;
   last_assistant_message?: string;
@@ -218,8 +218,8 @@ export interface PendingMessageWithId extends PendingMessage {
 
 export interface ObservationData {
   tool_name: string;
-  tool_input: any;
-  tool_response: any;
+  tool_input: unknown;
+  tool_response: unknown;
   prompt_number: number;
   cwd?: string;
   agentId?: string;
@@ -230,7 +230,7 @@ export interface ObservationData {
 export interface SSEEvent {
   type: string;
   timestamp?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export type SSEClient = Response;

@@ -22,7 +22,8 @@
  * whitespace collapse so words are not glued together.
  */
 const UNSAFE_CHARS =
-  /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F؜​-‏‪-‮⁠-⁤⁦-⁯﻿]/g;
+  // eslint-disable-next-line no-control-regex -- intentionally strips C0/C1 control characters from untrusted text
+  /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u061C\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u206F\uFEFF]/g;
 
 const TAG_FRAMING = { '<': '‹', '>': '›', '`': 'ˋ' };
 

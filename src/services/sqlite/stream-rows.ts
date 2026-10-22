@@ -1,9 +1,10 @@
+import type { SQLQueryBindings } from 'bun:sqlite';
 import { logger } from '../../utils/logger.js';
 
 /** The part of a bun:sqlite prepared statement these helpers read rows through. */
 interface RowStatement {
-  iterate?: (...params: any[]) => Iterable<unknown>;
-  all: (...params: any[]) => unknown[];
+  iterate?: (...params: SQLQueryBindings[]) => Iterable<unknown>;
+  all: (...params: SQLQueryBindings[]) => unknown[];
 }
 
 let warnedMissingIterate = false;
@@ -25,7 +26,7 @@ let warnedMissingIterate = false;
  * memory) and the one-time warning names the real cause instead of a cryptic
  * TypeError.
  */
-export function streamRows(statement: RowStatement, ...params: any[]): Iterable<unknown> {
+export function streamRows(statement: RowStatement, ...params: SQLQueryBindings[]): Iterable<unknown> {
   if (typeof statement.iterate === 'function') return statement.iterate(...params);
   if (!warnedMissingIterate) {
     warnedMissingIterate = true;
@@ -51,7 +52,7 @@ export function streamRows(statement: RowStatement, ...params: any[]): Iterable<
  */
 export function pageMatchingRows<T>(
   statement: RowStatement & { finalize: () => void },
-  params: any[],
+  params: SQLQueryBindings[],
   matches: (row: T) => boolean,
   page: { limit: unknown; offset?: unknown },
 ): T[] {

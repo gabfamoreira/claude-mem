@@ -1,6 +1,5 @@
 
 import { createHash } from 'crypto';
-import { logger } from '../../../utils/logger.js';
 
 /**
  * Whether an observation has a title worth storing. Title-less observations are

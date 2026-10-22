@@ -2982,7 +2982,7 @@ export class SessionStore {
   }
 
   getRecentSessionsWithStatus(project: string, limit: number = 3, platformSource?: string): RecentSessionStatusRow[] {
-    const params: any[] = [project];
+    const params: SQLQueryBindings[] = [project];
     let platformClause = '';
     if (platformSource) {
       platformClause = `AND COALESCE(NULLIF(s.platform_source, ''), '${DEFAULT_PLATFORM_SOURCE}') = ?`;
@@ -3014,7 +3014,7 @@ export class SessionStore {
   }
 
   getObservationsForSession(memorySessionId: string, platformSource?: string): SessionObservationRow[] {
-    const params: any[] = [memorySessionId];
+    const params: SQLQueryBindings[] = [memorySessionId];
     let platformClause = '';
     if (platformSource) {
       platformClause = `
@@ -3197,7 +3197,7 @@ export class SessionStore {
   }
 
   getSummaryForSession(memorySessionId: string, platformSource?: string): SummaryDetailRow | null {
-    const params: any[] = [memorySessionId];
+    const params: SQLQueryBindings[] = [memorySessionId];
     let platformClause = '';
     if (platformSource) {
       platformClause = `
@@ -3604,6 +3604,7 @@ export class SessionStore {
   saveNativeUserPrompt(contentSessionId: string, sessionDbId: number, nativePromptId: string, promptText: string, identityPromptText = promptText): {
     id: number; promptNumber: number; duplicate: boolean;
   } {
+    // eslint-disable-next-line no-control-regex -- rejects native prompt ids containing whitespace or ASCII control characters
     if (!nativePromptId || nativePromptId.length > 256 || /[\s\x00-\x1f\x7f]/.test(nativePromptId)) {
       throw new Error('Invalid native prompt identity');
     }
@@ -4183,9 +4184,9 @@ export class SessionStore {
     prompts: any[];
   } {
     const normalizedPlatformSource = platformSource ? normalizePlatformSource(platformSource) : undefined;
-    const buildScope = (rowAlias: string, sessionAlias: string, includeMergedProject: boolean = false): { clause: string; params: any[] } => {
+    const buildScope = (rowAlias: string, sessionAlias: string, includeMergedProject: boolean = false): { clause: string; params: SQLQueryBindings[] } => {
       const conditions: string[] = [];
-      const params: any[] = [];
+      const params: SQLQueryBindings[] = [];
 
       if (project) {
         if (includeMergedProject) {

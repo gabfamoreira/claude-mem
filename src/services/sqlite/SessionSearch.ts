@@ -1,4 +1,4 @@
-import { Database } from 'bun:sqlite';
+import { Database, type SQLQueryBindings } from 'bun:sqlite';
 import { TableNameRow } from '../../types/database.js';
 import { DATA_DIR, DB_PATH, ensureDir } from '../../shared/paths.js';
 import { logger } from '../../utils/logger.js';
@@ -9,7 +9,6 @@ import {
   UserPromptSearchResult,
   SearchOptions,
   SearchFilters,
-  DateRange,
   ObservationRow
 } from './types.js';
 import { DEFAULT_PLATFORM_SOURCE, normalizePlatformSource } from '../../shared/platform-source.js';
@@ -284,7 +283,7 @@ export class SessionSearch {
 
   private buildFilterClause(
     filters: SearchFilters,
-    params: any[],
+    params: SQLQueryBindings[],
     tableAlias: string = 'o'
   ): string {
     const conditions: string[] = [];
@@ -506,7 +505,7 @@ export class SessionSearch {
     const match = SessionSearch.buildSubstringClause(query, [
       'o.title', 'o.subtitle', 'o.narrative', 'o.text', 'o.facts', 'o.concepts',
     ]);
-    const filterParams: any[] = [];
+    const filterParams: SQLQueryBindings[] = [];
     const filterClause = this.buildFilterClause(filters, filterParams, 'o');
 
     const sql = `
@@ -533,7 +532,7 @@ export class SessionSearch {
     ]);
     const filterOptions = { ...filters };
     delete filterOptions.type;
-    const filterParams: any[] = [];
+    const filterParams: SQLQueryBindings[] = [];
     const filterClause = this.buildFilterClause(filterOptions, filterParams, 's');
     const orderClause = orderBy === 'date_asc'
       ? 'ORDER BY s.created_at_epoch ASC, s.id ASC'
@@ -552,7 +551,7 @@ export class SessionSearch {
   }
 
   searchObservations(query: string | undefined, options: SearchOptions = {}): ObservationSearchResult[] {
-    const params: any[] = [];
+    const params: SQLQueryBindings[] = [];
     const { limit = 50, offset = 0, orderBy = 'relevance', ...filters } = options;
 
     if (!query) {
@@ -623,7 +622,7 @@ export class SessionSearch {
   }
 
   searchSessions(query: string | undefined, options: SearchOptions = {}): SessionSummarySearchResult[] {
-    const params: any[] = [];
+    const params: SQLQueryBindings[] = [];
     const { limit = 50, offset = 0, orderBy = 'relevance', ...filters } = options;
 
     if (!query) {
@@ -705,7 +704,7 @@ export class SessionSearch {
    * argument and the rest are the filter parameters, as built by the callers. Returns null when the query has
    * nothing to widen or the any-term form matches nothing either.
    */
-  private searchFtsAnyTerm<T>(sql: string, query: string, params: any[], limit: number, offset: number): T[] | null {
+  private searchFtsAnyTerm<T>(sql: string, query: string, params: SQLQueryBindings[], limit: number, offset: number): T[] | null {
     const anyTermQuery = SessionSearch.buildFTSAnyTermQuery(query);
     if (!anyTermQuery) {
       return null;
@@ -719,7 +718,7 @@ export class SessionSearch {
   }
 
   findByConcept(concept: string, options: SearchOptions = {}): ObservationSearchResult[] {
-    const params: any[] = [];
+    const params: SQLQueryBindings[] = [];
     const { limit = 50, offset = 0, orderBy = 'date_desc', ...filters } = options;
 
     const conceptFilters = { ...filters, concepts: concept };
@@ -821,7 +820,7 @@ export class SessionSearch {
     observations: ObservationSearchResult[];
     sessions: SessionSummarySearchResult[];
   } {
-    const params: any[] = [];
+    const params: SQLQueryBindings[] = [];
     const { limit = 50, offset = 0, orderBy = 'date_desc', isFolder = false, ...filters } = options;
     // filePath is the file filter; a caller's own `files` filter is not added on top.
     delete filters.files;
@@ -860,7 +859,7 @@ export class SessionSearch {
         )
       : observationStatement.all(...params) as ObservationSearchResult[];
 
-    const sessionParams: any[] = [];
+    const sessionParams: SQLQueryBindings[] = [];
     const sessionFilters = { ...filters };
     delete sessionFilters.type; 
 
@@ -923,7 +922,7 @@ export class SessionSearch {
     type: ObservationRow['type'] | ObservationRow['type'][],
     options: SearchOptions = {}
   ): ObservationSearchResult[] {
-    const params: any[] = [];
+    const params: SQLQueryBindings[] = [];
     const { limit = 50, offset = 0, orderBy = 'date_desc', ...filters } = options;
 
     const typeFilters = { ...filters, type };
@@ -944,7 +943,7 @@ export class SessionSearch {
   }
 
   searchUserPrompts(query: string | undefined, options: SearchOptions = {}): UserPromptSearchResult[] {
-    const params: any[] = [];
+    const params: SQLQueryBindings[] = [];
     const { limit = 20, offset = 0, orderBy = 'relevance', ...filters } = options;
 
     const baseConditions: string[] = [];

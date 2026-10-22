@@ -2,7 +2,6 @@
 import type {
   ContextConfig,
   Observation,
-  SessionSummary,
   TokenEconomics,
   PriorMessages,
 } from '../types.js';

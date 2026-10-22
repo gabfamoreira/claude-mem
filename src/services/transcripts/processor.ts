@@ -73,7 +73,7 @@ interface PendingTool {
   toolInput?: unknown;
 }
 
-interface SessionState {
+type SessionState = {
   sessionId: string;
   platformSource: string;
   cwd?: string;
@@ -82,7 +82,7 @@ interface SessionState {
   lastAssistantMessage?: string;
   pendingTools?: Map<string, PendingTool>;
   isSubagent?: boolean;
-}
+};
 
 /**
  * What the watcher keeps per transcript file across restarts: the working
@@ -225,7 +225,7 @@ export class TranscriptEventProcessor {
     event: SchemaEvent,
     sessionIdOverride?: string
   ): string | null {
-    const ctx = { watch, schema } as any;
+    const ctx = { watch, schema } as Parameters<typeof resolveFieldSpec>[2];
     const fieldSpec = event.fields?.sessionId ?? (schema.sessionIdPath ? { path: schema.sessionIdPath } : undefined);
     const resolved = resolveFieldSpec(fieldSpec, entry, ctx);
     if (typeof resolved === 'string' && resolved.trim()) return resolved;
@@ -241,7 +241,7 @@ export class TranscriptEventProcessor {
     event: SchemaEvent,
     session: SessionState
   ): string | undefined {
-    const ctx = { watch, schema, session } as any;
+    const ctx = { watch, schema, session } as Parameters<typeof resolveFieldSpec>[2];
     const fieldSpec = event.fields?.cwd ?? (schema.cwdPath ? { path: schema.cwdPath } : undefined);
     const resolved = resolveFieldSpec(fieldSpec, entry, ctx);
     if (typeof resolved === 'string' && resolved.trim()) return resolved;
@@ -256,7 +256,7 @@ export class TranscriptEventProcessor {
     event: SchemaEvent,
     session: SessionState
   ): string | undefined {
-    const ctx = { watch, schema, session } as any;
+    const ctx = { watch, schema, session } as Parameters<typeof resolveFieldSpec>[2];
     const fieldSpec = event.fields?.project ?? (schema.projectPath ? { path: schema.projectPath } : undefined);
     const resolved = resolveFieldSpec(fieldSpec, entry, ctx);
     if (typeof resolved === 'string' && resolved.trim()) return resolved;

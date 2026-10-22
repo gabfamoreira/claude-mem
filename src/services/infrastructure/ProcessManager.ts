@@ -2,7 +2,7 @@
 import path from 'path';
 import { homedir, tmpdir } from 'os';
 import { existsSync, writeFileSync, readFileSync, unlinkSync, mkdirSync, statSync, utimesSync, copyFileSync, realpathSync } from 'fs';
-import { execFileSync, execSync, spawnSync } from 'child_process';
+import { execFileSync, spawnSync } from 'child_process';
 import { spawnHidden } from '../../shared/spawn.js';
 import { logger } from '../../utils/logger.js';
 import { sanitizeEnv } from '../../supervisor/env-sanitizer.js';

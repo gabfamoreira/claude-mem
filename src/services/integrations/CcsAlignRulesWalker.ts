@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync,
 import path from 'path';
 import { homedir } from 'os';
 import { SettingsDefaultsManager } from '../../shared/SettingsDefaultsManager.js';
-import { USER_SETTINGS_PATH, DATA_DIR } from '../../shared/paths.js';
+import { USER_SETTINGS_PATH } from '../../shared/paths.js';
 import { logger } from '../../utils/logger.js';
 
 // CCS Align — Phase 2: rules alignment (house → project → seat).

@@ -2,7 +2,6 @@
 import path from 'path';
 import { homedir } from 'os';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { logger } from '../../utils/logger.js';
 import { getMcpServerAbsolutePath, getNodeAbsolutePath } from './install-paths.js';
 import { readJsonSafe } from '../../utils/json-utils.js';
 import { injectContextIntoMarkdownFile } from '../../utils/context-injection.js';
@@ -28,7 +27,7 @@ export function writeMcpJsonConfig(
   const parentDirectory = path.dirname(configFilePath);
   mkdirSync(parentDirectory, { recursive: true });
 
-  const existingConfig = readJsonSafe<Record<string, any>>(configFilePath, {});
+  const existingConfig = readJsonSafe<Record<string, Record<string, unknown> | undefined>>(configFilePath, {});
 
   if (!existingConfig[serversKeyName]) {
     existingConfig[serversKeyName] = {};
