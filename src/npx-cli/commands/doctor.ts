@@ -12,8 +12,7 @@ import { IS_WINDOWS, marketplaceDirectory, readPluginVersion } from '../utils/pa
 import { formatHostForUrl, getWorkerHost, getWorkerPort, resolvePluginRoot, type PluginRootResolution } from '../../shared/worker-utils.js';
 import { getBunVersion, getUvVersion, isInstallCurrent } from '../install/setup-runtime.js';
 import { isTreeSitterCliBinaryUsable, treeSitterCliBinaryPath } from '../../services/smart-file-read/tree-sitter-cli-provision.js';
-import { resolveDataDir } from '../../shared/paths.js';
-import { paths } from '../../shared/paths.js';
+import { resolveDataDir, paths } from '../../shared/paths.js';
 import { findOrphanedChromaRoots, readProcessTablePosix } from '../../supervisor/orphan-chroma-sweep.js';
 import { isPidAlive } from '../../supervisor/process-registry.js';
 import { checkWindowsGitBash } from '../utils/windows-git-bash-preflight.js';

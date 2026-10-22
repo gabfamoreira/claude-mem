@@ -5,11 +5,8 @@
  * @module dsh-claude-mem/hooks
  */
 
-import type { Context } from './sdk-contract.js'
-import type { Agent } from './sdk-contract.js'
-import type { ContentBlock, UserMessage } from './sdk-contract.js'
+import type { Context, Agent, ContentBlock, UserMessage, ToolExecution, ToolExecutionResult, PostToolDecision } from './sdk-contract.js'
 import { createUserMessage } from './vendor/sdk.mjs'
-import type { ToolExecution, ToolExecutionResult, PostToolDecision } from './sdk-contract.js'
 import { basename } from 'node:path'
 import { createHarnessWorkerClient } from '../harness-worker.js'
 import type { WorkerClient } from './worker.js'

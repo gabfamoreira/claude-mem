@@ -19,8 +19,8 @@ import { mkdtempSync, rmSync, existsSync } from 'fs';
 import { tmpdir } from 'os';
 import path from 'path';
 import { SessionStore } from '../../src/services/sqlite/SessionStore.js';
-import { SessionSearch } from '../../src/services/sqlite/SessionSearch.js';
 import {
+  SessionSearch,
   OBSERVATIONS_FTS_TRIGGERS_SQL,
   SESSION_SUMMARIES_FTS_TRIGGERS_SQL,
 } from '../../src/services/sqlite/SessionSearch.js';

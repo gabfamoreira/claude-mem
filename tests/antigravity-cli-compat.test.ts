@@ -1,8 +1,7 @@
 import { describe, it, expect } from 'bun:test';
-import { mkdtempSync, writeFileSync } from 'fs';
+import { mkdtempSync, writeFileSync, readFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { readFileSync } from 'fs';
 import { antigravityCliAdapter } from '../src/cli/adapters/antigravity-cli.js';
 import { extractLastMessage } from '../src/shared/transcript-parser.js';
 import {

@@ -8,10 +8,9 @@
 // A submodule folds into its superproject the same way a worktree does.
 import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync, realpathSync } from 'node:fs';
 import path from 'node:path';
 import { tmpdir } from 'node:os';
-import { realpathSync } from 'node:fs';
 
 import { getProjectContext } from '../../src/utils/project-name.js';
 

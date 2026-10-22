@@ -509,7 +509,7 @@ async function runMatrix(sidecar: SidecarState): Promise<void> {
     fresh,
   );
 
-  let a = openDevice('a');
+  const a = openDevice('a');
   let b = openDevice('b');
   const tempDirs = new Set([a.dir, b.dir]);
   try {

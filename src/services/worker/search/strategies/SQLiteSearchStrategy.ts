@@ -42,9 +42,9 @@ export class SQLiteSearchStrategy {
     const searchSessions = isCategoryRequested(searchType, 'sessions');
     const searchPrompts = isCategoryRequested(searchType, 'prompts');
 
-    let observations: ObservationSearchResult[] = [];
-    let sessions: SessionSummarySearchResult[] = [];
-    let prompts: UserPromptSearchResult[] = [];
+    const observations: ObservationSearchResult[] = [];
+    const sessions: SessionSummarySearchResult[] = [];
+    const prompts: UserPromptSearchResult[] = [];
 
     const baseOptions = { limit, offset, orderBy, project, projects, platformSource, dateRange };
 

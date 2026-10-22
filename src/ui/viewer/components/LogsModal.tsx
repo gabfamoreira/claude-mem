@@ -299,7 +299,7 @@ export function LogsDrawer({ isOpen, onClose }: LogsDrawerProps) {
     const componentConfig = LOG_COMPONENTS.find(c => c.key === line.component);
 
     let color = 'var(--color-text-primary)';
-    let fontWeight = 'normal';
+    const fontWeight = 'normal';
     let backgroundColor = 'transparent';
 
     if (line.level === 'ERROR') {

@@ -191,8 +191,7 @@ import { shutdownWorkerAndWait, type ShutdownBlocker } from '../../services/inst
 import { holdSpawnLock, SPAWN_LOCK_STALE_MS } from '../../shared/worker-spawn-gate.js';
 import { readOwnedWorkerPidInfo, type PidInfo } from '../../supervisor/process-registry.js';
 import { isWorkerAutostartDisabled } from '../../shared/worker-autostart.js';
-import { detectInstalledIDEs } from './ide-detection.js';
-import { initialIDESelection } from './ide-detection.js';
+import { detectInstalledIDEs, initialIDESelection } from './ide-detection.js';
 import { canonicalIntegrationId } from '../../shared/integration-id.js';
 import { checkWindowsGitBash } from '../utils/windows-git-bash-preflight.js';
 

@@ -340,7 +340,7 @@ describe('logger.safeStringify()', () => {
   it('truncates a nested object past the depth cap instead of recursing into it', () => {
     // Depth far beyond the serializer's cap: prune stops early, so it never
     // walks the whole chain (which is how a plain JSON.stringify overflows).
-    let deep: any = {};
+    const deep: any = {};
     let cursor = deep;
     for (let i = 0; i < 50; i++) {
       cursor.next = {};
@@ -352,7 +352,7 @@ describe('logger.safeStringify()', () => {
   });
 
   it('truncates a nested array past the depth cap', () => {
-    let arr: any = [];
+    const arr: any = [];
     let cursor = arr;
     for (let i = 0; i < 50; i++) {
       const child: any[] = [];

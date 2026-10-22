@@ -4,8 +4,7 @@ import {
   CONTEXT_OUTPUT_LIMIT,
 } from '../../src/services/context/ContextBudget.js';
 import { fitContextForDelivery } from '../../src/services/context/ContextBuilder.js';
-import type { Observation, SessionSummary } from '../../src/services/context/types.js';
-import type { ContextConfig } from '../../src/services/context/types.js';
+import type { Observation, SessionSummary, ContextConfig } from '../../src/services/context/types.js';
 
 // #3802 — the SessionStart block was sized by item counts, so on an active
 // project it went past Claude Code's 10,000-character per-hook-output limit and

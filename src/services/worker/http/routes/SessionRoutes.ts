@@ -8,7 +8,7 @@ import { logger } from '../../../../utils/logger.js';
 import { stripMemoryTags, isCodexInternalPrompt, isInternalProtocolPayload } from '../../../../utils/tag-stripping.js';
 import { SessionManager } from '../../SessionManager.js';
 import { DatabaseManager } from '../../DatabaseManager.js';
-import { ClaudeProvider } from '../../ClaudeProvider.js';
+import { ClaudeProvider, classifyClaudeError } from '../../ClaudeProvider.js';
 import { GeminiProvider } from '../../GeminiProvider.js';
 import { OpenRouterProvider } from '../../OpenRouterProvider.js';
 import { OpenAICompatProvider } from '../../OpenAICompatProvider.js';
@@ -47,7 +47,6 @@ import {
   resolveQuotaCooldownMs,
 } from '../../../../shared/quota-cooldown.js';
 import { isClassified, type ClassifiedProviderError } from '../../provider-errors.js';
-import { classifyClaudeError } from '../../ClaudeProvider.js';
 import { isSessionParkedForSlot } from '../../../../supervisor/process-registry.js';
 import {
   canAttemptClaudeCliSelfHeal,

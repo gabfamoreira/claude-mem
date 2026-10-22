@@ -218,6 +218,18 @@ export default defineConfig([
     },
   },
   {
+    // Config change: CommonJS files cannot use `import`, so the rule has no
+    // valid fix there. Applies to every *.cjs file in the repo.
+    files: ["**/*.cjs"],
+    languageOptions: {
+      sourceType: "commonjs",
+      globals: { ...globals.commonjs },
+    },
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
+  {
     files: ["eslint-rules/**/*.cjs"],
     languageOptions: {
       sourceType: "commonjs",

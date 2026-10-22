@@ -7,8 +7,8 @@ import {
   classifyHttpProviderError,
   parseRetryAfterMs,
 } from '../../../src/server/generation/providers/shared/error-classification.js';
-import { classifyClaudeServerError } from '../../../src/server/generation/providers/ClaudeObservationProvider.js';
 import {
+  classifyClaudeServerError,
   ClaudeObservationProvider,
 } from '../../../src/server/generation/providers/ClaudeObservationProvider.js';
 import {
