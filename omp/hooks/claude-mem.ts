@@ -65,7 +65,7 @@ const REQUEST_TIMEOUT_MS = 5_000;
 function readClaudeMemSettings(): Record<string, unknown> {
   const dataDir = process.env.CLAUDE_MEM_DATA_DIR || join(homedir(), ".claude-mem");
   try {
-    const doc = JSON.parse(readFileSync(join(dataDir, "settings.json"), "utf8").replace(/^﻿/, ""));
+    const doc = JSON.parse(readFileSync(join(dataDir, "settings.json"), "utf8").replace(/^\uFEFF/, ""));
     const env = doc?.env;
     const nested = env !== null && typeof env === "object" && !Array.isArray(env)
       && Object.keys(env).some(key => key.startsWith("CLAUDE_MEM_"));

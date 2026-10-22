@@ -223,10 +223,10 @@ async function flushSpool() {
   try {
     lines = readFileSync(claim, 'utf8').split('\n').filter(Boolean);
   } catch {
-    try { if (!existsSync(SPOOL)) renameSync(claim, SPOOL); } catch {}
+    try { if (!existsSync(SPOOL)) renameSync(claim, SPOOL); } catch { /* best-effort restore; nothing else to do */ }
     return;
   }
-  if (!lines.length) { try { rmSync(claim, { force: true }); } catch {} return; }
+  if (!lines.length) { try { rmSync(claim, { force: true }); } catch { /* best-effort cleanup of empty claim */ } return; }
   // oldest-first replay regardless of file order (a failed-flush merge can
   // interleave); Array.prototype.sort is stable, so same-second events keep
   // their file order
@@ -240,7 +240,7 @@ async function flushSpool() {
     const res = await http('POST', `${CFG.apiBase}/api/hooks/ingest`, { v: 1, batch }, HTTP_TIMEOUT_MS.normal);
     if (!res.ok) throw new Error(String(res.status));
     for (const env of rest) spool(env);
-    try { rmSync(claim, { force: true }); } catch {}
+    try { rmSync(claim, { force: true }); } catch { /* best-effort cleanup; events already sent */ }
   } catch {
     // put it back for next time — MERGE, never rename-over: a concurrent hook
     // may have created a replacement spool while our request was in flight,
@@ -251,7 +251,7 @@ async function flushSpool() {
       const merge = claim + '.merge';
       // rename is atomic: a concurrent appender either lands in the file
       // before the move (content travels with it) or creates a fresh spool
-      try { renameSync(SPOOL, merge); appendFileSync(claim, readFileSync(merge, 'utf8')); rmSync(merge, { force: true }); } catch {}
+      try { renameSync(SPOOL, merge); appendFileSync(claim, readFileSync(merge, 'utf8')); rmSync(merge, { force: true }); } catch { /* no replacement spool to merge */ }
       try {
         // restore without clobbering: wx fails if yet another hook recreated
         // the spool meanwhile — then append the claim instead (the ts sort at
@@ -262,7 +262,7 @@ async function flushSpool() {
       }
       rmSync(claim, { force: true });
     } catch {
-      try { if (!existsSync(SPOOL)) renameSync(claim, SPOOL); } catch {}
+      try { if (!existsSync(SPOOL)) renameSync(claim, SPOOL); } catch { /* best-effort restore; nothing else to do */ }
     }
   }
 }
@@ -295,11 +295,11 @@ async function mcpRpc(methodName, params, id) {
   let data = null;
   const text = (res.text || '').trim();
   if (text.startsWith('{')) {
-    try { data = JSON.parse(text); } catch {}
+    try { data = JSON.parse(text); } catch { /* non-JSON body: leave data null */ }
   } else if (text.includes('data:')) {
     for (const line of text.split('\n')) {
       const m = line.match(/^data:\s*(\{.*\})\s*$/);
-      if (m) { try { data = JSON.parse(m[1]); } catch {} }
+      if (m) { try { data = JSON.parse(m[1]); } catch { /* skip malformed SSE data line */ } }
     }
   }
   return { ok: res.ok, data, status: res.status };

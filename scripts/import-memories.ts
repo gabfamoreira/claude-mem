@@ -35,7 +35,7 @@ async function importMemories(inputFile: string) {
     if (!healthCheck.ok) {
       throw new Error('Worker not responding');
     }
-  } catch (error) {
+  } catch {
     console.error(`❌ Worker not running at ${WORKER_URL}`);
     console.error('   Please ensure the claude-mem worker is running.');
     process.exit(1);

@@ -80,7 +80,7 @@ function getTrackedFolders(workingDir: string): Set<string> {
         dir = path.dirname(dir);
       }
     }
-  } catch (error) {
+  } catch {
     console.error('Warning: git ls-files failed, falling back to directory walk');
     walkDirectoriesWithIgnore(workingDir, folders);
   }
@@ -122,7 +122,7 @@ function hasDirectChildFile(obs: ObservationRow, folderPath: string): boolean {
       if (Array.isArray(files)) {
         return files.some(f => isDirectChild(f, folderPath));
       }
-    } catch {}
+    } catch { /* malformed JSON: treat as no matching files */ }
     return false;
   };
 
@@ -171,7 +171,7 @@ function extractRelevantFile(obs: ObservationRow, relativeFolder: string): strin
           }
         }
       }
-    } catch {}
+    } catch { /* malformed files_modified JSON: fall through to files_read */ }
   }
 
   if (obs.files_read) {
@@ -184,7 +184,7 @@ function extractRelevantFile(obs: ObservationRow, relativeFolder: string): strin
           }
         }
       }
-    } catch {}
+    } catch { /* malformed files_read JSON: fall back to General */ }
   }
 
   return 'General';

@@ -67,8 +67,6 @@ function detectAntiPatterns(filePath: string, projectRoot: string): AntiPattern[
       const match = trimmed.match(pattern);
       if (match) {
         const matchedString = match[1];
-        const genericPatterns = ['error', 'fail', 'connection', 'timeout', 'not', 'invalid', 'unable'];
-        const isGeneric = genericPatterns.some(gp => matchedString.toLowerCase().includes(gp));
 
         if (hasOverride && overrideReason) {
           antiPatterns.push({
@@ -266,7 +264,6 @@ function analyzeTryCatchBlock(
   isCriticalPath: boolean,
   antiPatterns: AntiPattern[]
 ): void {
-  const tryBlock = tryLines.join('\n');
   const catchBlock = catchLines.join('\n');
 
   const catchContent = catchBlock

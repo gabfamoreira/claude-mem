@@ -1,4 +1,4 @@
-import { query, type SDKMessage, type SDKResultMessage } from "@anthropic-ai/claude-agent-sdk";
+import { query, type SDKResultMessage } from "@anthropic-ai/claude-agent-sdk";
 import * as fs from "fs/promises";
 import * as path from "path";
 import { createHash } from "crypto";

@@ -4,12 +4,9 @@ import { build } from 'esbuild';
 import fs from 'fs';
 import path from 'path';
 import vm from 'node:vm';
-import { fileURLToPath } from 'url';
 import { allowScriptsMap } from './postinstall-allowlist.js';
 import { OPENCODE_PLUGIN_BUILD_OPTIONS } from './opencode-plugin-build-options.js';
 import { preparePiExtensionBuild, preflightDshAttribution, DSH_PLUGIN_BUILD_OPTIONS } from './harness-plugin-build-options.js';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Map every __dirname/__filename in the bundled body to runtime-computed
 // globals, applied by esbuild BEFORE minification. Any absolute build-machine

@@ -1,12 +1,10 @@
 import {
   query,
-  type SDKMessage,
   type SDKResultMessage,
 } from "@anthropic-ai/claude-agent-sdk";
 import {
   collectDiagnostics,
   formatDiagnostics,
-  type SystemDiagnostics,
 } from "./collector.ts";
 
 export interface BugReportInput {

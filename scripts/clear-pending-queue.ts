@@ -54,7 +54,7 @@ Examples:
   bun scripts/clear-pending-queue.ts --all --force
 
 Notes:
-  Operates directly on ~/.claude-mem/claude-mem.db (or \$CLAUDE_MEM_DATA_DIR).
+  Operates directly on ~/.claude-mem/claude-mem.db (or $CLAUDE_MEM_DATA_DIR).
   Uses SQLite WAL mode so it is safe to run while the worker is running.
 `);
     process.exit(0);

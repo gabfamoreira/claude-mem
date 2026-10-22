@@ -244,7 +244,7 @@ async function main() {
 
     await execAsync(`${openCommand} "${githubUrl}"`);
     console.log("✓ Browser opened successfully");
-  } catch (error) {
+  } catch {
     console.error("❌ Failed to open browser. Please visit:");
     console.error(githubUrl);
   }

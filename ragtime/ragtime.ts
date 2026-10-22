@@ -88,7 +88,7 @@ async function cleanupOldTranscripts(): Promise<void> {
           try {
             fs.unlinkSync(filePath);
             cleaned++;
-          } catch (err) {
+          } catch {
             console.warn(`Failed to delete old transcript: ${filePath}`);
           }
         }

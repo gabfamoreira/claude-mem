@@ -33,8 +33,8 @@ export interface SystemDiagnostics {
     port?: number;
     uptime?: number;
     version?: string;
-    health?: any;
-    stats?: any;
+    health?: unknown;
+    stats?: { worker?: { uptime?: number; version?: string; activeSessions?: number; sseClients?: number } } | null;
   };
   logs: {
     workerLog: string[];
@@ -53,7 +53,7 @@ export interface SystemDiagnostics {
   config: {
     settingsPath: string;
     settingsExist: boolean;
-    settings?: Record<string, any>;
+    settings?: Record<string, unknown>;
   };
 }
 
@@ -68,7 +68,7 @@ async function getClaudememVersion(): Promise<string> {
     const content = await fs.readFile(packageJsonPath, "utf-8");
     const pkg = JSON.parse(content);
     return pkg.version || "unknown";
-  } catch (error) {
+  } catch {
     return "unknown";
   }
 }
@@ -77,7 +77,7 @@ async function getClaudeCodeVersion(): Promise<string> {
   try {
     const { stdout } = await execAsync("claude --version");
     return stdout.trim();
-  } catch (error) {
+  } catch {
     return "not installed or not in PATH";
   }
 }
@@ -86,7 +86,7 @@ async function getBunVersion(): Promise<string> {
   try {
     const { stdout } = await execAsync("bun --version");
     return stdout.trim();
-  } catch (error) {
+  } catch {
     return "not installed";
   }
 }
@@ -104,39 +104,39 @@ async function getOsVersion(): Promise<string> {
       return stdout.trim();
     }
     return "unknown";
-  } catch (error) {
+  } catch {
     return "unknown";
   }
 }
 
-async function checkWorkerHealth(host: string, port: number): Promise<any> {
+async function checkWorkerHealth(host: string, port: number): Promise<unknown> {
   try {
     const response = await fetch(`http://${formatHostForUrl(host)}:${port}/api/health`, {
       signal: AbortSignal.timeout(2000),
     });
     return await response.json();
-  } catch (error) {
+  } catch {
     return null;
   }
 }
 
-async function getWorkerStats(host: string, port: number): Promise<any> {
+async function getWorkerStats(host: string, port: number): Promise<SystemDiagnostics["worker"]["stats"]> {
   try {
     const response = await fetch(`http://${formatHostForUrl(host)}:${port}/api/stats`, {
       signal: AbortSignal.timeout(2000),
     });
     return await response.json();
-  } catch (error) {
+  } catch {
     return null;
   }
 }
 
-async function readPidFile(dataDir: string): Promise<any> {
+async function readPidFile(dataDir: string): Promise<{ pid?: number; port?: number } | null> {
   try {
     const pidPath = path.join(dataDir, "worker.pid");
     const content = await fs.readFile(pidPath, "utf-8");
     return JSON.parse(content);
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -146,20 +146,20 @@ async function readLogLines(logPath: string, lines: number): Promise<string[]> {
     const content = await fs.readFile(logPath, "utf-8");
     const allLines = content.split("\n").filter((line) => line.trim());
     return allLines.slice(-lines);
-  } catch (error) {
+  } catch {
     return [];
   }
 }
 
 async function getSettings(
   dataDir: string
-): Promise<{ exists: boolean; settings?: Record<string, any> }> {
+): Promise<{ exists: boolean; settings?: Record<string, unknown> }> {
   try {
     const settingsPath = path.join(dataDir, "settings.json");
     const content = await fs.readFile(settingsPath, "utf-8");
     const settings = JSON.parse(content);
     return { exists: true, settings };
-  } catch (error) {
+  } catch {
     return { exists: false };
   }
 }
@@ -171,7 +171,7 @@ async function getDatabaseInfo(
     const dbPath = path.join(dataDir, "claude-mem.db");
     const stats = await fs.stat(dbPath);
     return { exists: true, size: stats.size };
-  } catch (error) {
+  } catch {
     return { exists: false };
   }
 }
@@ -199,7 +199,7 @@ async function getTableCounts(
       };
     }
     return undefined;
-  } catch (error) {
+  } catch {
     return undefined;
   }
 }
