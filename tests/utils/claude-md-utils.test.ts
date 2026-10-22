@@ -36,7 +36,7 @@ mock.module('../../src/shared/worker-utils.js', () => ({
   },
   clearPortCache: () => {},
   ensureWorkerRunning: () => Promise.resolve(true),
-  fetchWithTimeout: (url: string, init: any, timeoutMs: number) => globalThis.fetch(url, init),
+  fetchWithTimeout: (url: string, init: any) => globalThis.fetch(url, init),
   buildWorkerUrl: (apiPath: string) => `http://127.0.0.1:37777${apiPath}`,
 }));
 

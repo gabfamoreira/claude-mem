@@ -25,7 +25,7 @@ const { SessionManager } = await import('../../../src/services/worker/SessionMan
 const { SettingsDefaultsManager } = await import('../../../src/shared/SettingsDefaultsManager.js');
 const { ModeManager } = await import('../../../src/services/domain/ModeManager.js');
 const requestedModel = kind === 'control' ? 'claude-haiku-4-5-20251001' : 'haiku';
-const cleanup: Array<() => void | Promise<unknown>> = [];
+const cleanup: Array<(() => void) | (() => Promise<unknown>)> = [];
 try {
   const settings = SettingsDefaultsManager.loadFromFile;
   cleanup.push(() => { SettingsDefaultsManager.loadFromFile = settings; });

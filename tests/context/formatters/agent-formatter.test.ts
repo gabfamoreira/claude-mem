@@ -1,4 +1,4 @@
-import { describe, it, expect, mock, beforeEach, afterAll } from 'bun:test';
+import { describe, it, expect, mock, afterAll } from 'bun:test';
 
 // Capture real exports before mock.module mutates the live namespace, then
 // re-register the snapshot in afterAll so the partial ModeManager stub (no

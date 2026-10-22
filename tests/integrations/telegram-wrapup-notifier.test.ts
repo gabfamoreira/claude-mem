@@ -17,7 +17,7 @@ import {
 describe('Telegram wrap-up notifier', () => {
   let store: SessionStore;
   const originalFetch = globalThis.fetch;
-  const formatSummary = mock(async (_input: TelegramWrapupFormatterInput) => '• Shipped the wrap-up');
+  const formatSummary = mock<(input: TelegramWrapupFormatterInput) => Promise<string>>(async () => '• Shipped the wrap-up');
 
   beforeEach(() => {
     store = new SessionStore(':memory:');
@@ -68,7 +68,7 @@ describe('Telegram wrap-up notifier', () => {
   }
 
   function successfulFetch(): typeof fetch {
-    return mock((_url: string | URL | Request, _init?: RequestInit) => (
+    return mock(() => (
       Promise.resolve(new Response('', { status: 200 }))
     )) as unknown as typeof fetch;
   }
@@ -491,7 +491,7 @@ describe('Telegram wrap-up notifier', () => {
     const { sessionDbId, memorySessionId } = createSession('project-a', 'content-retry');
     storeSummary(memorySessionId, 'project-a');
     let failPost = true;
-    const fetchMock = mock((_url: string | URL | Request, _init?: RequestInit) => {
+    const fetchMock = mock(() => {
       const response = failPost
         ? new Response('', { status: 500, statusText: 'Server Error' })
         : new Response('', { status: 200 });

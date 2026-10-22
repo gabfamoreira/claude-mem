@@ -25,7 +25,7 @@ const { SettingsDefaultsManager } = await import('../../../src/shared/SettingsDe
 const { ModeManager } = await import('../../../src/services/domain/ModeManager.js');
 const { ingestSummarize } = await import('../../../src/services/worker/http/shared.js');
 const kind = process.argv[2];
-const cleanup: Array<() => void | Promise<unknown>> = [];
+const cleanup: Array<(() => void) | (() => Promise<unknown>)> = [];
 try {
         const savedSettings = SettingsDefaultsManager.loadFromFile;
         cleanup.push(() => { SettingsDefaultsManager.loadFromFile = savedSettings; });

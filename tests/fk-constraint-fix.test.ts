@@ -16,7 +16,7 @@ describe('FK Constraint Fix (Issue #846)', () => {
     store.close();
     try {
       require('fs').unlinkSync(testDbPath);
-    } catch (e) {
+    } catch {
       // Ignore cleanup errors
     }
   });

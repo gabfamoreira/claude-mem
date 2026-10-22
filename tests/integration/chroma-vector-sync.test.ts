@@ -122,22 +122,6 @@ describe('ChromaSync Vector Sync Integration', () => {
       const { ChromaSync } = await import('../../src/services/sync/ChromaSync.js');
       const sync = new ChromaSync(testProject);
 
-      const observationId = 1;
-      const memorySessionId = 'session-123';
-      const project = 'test-project';
-      const observation = {
-        type: 'discovery',
-        title: 'Test Title',
-        subtitle: 'Test Subtitle',
-        facts: ['fact1', 'fact2'],
-        narrative: 'Test narrative',
-        concepts: ['concept1'],
-        files_read: ['/path/to/file.ts'],
-        files_modified: []
-      };
-      const promptNumber = 1;
-      const createdAtEpoch = Date.now();
-
       expect(sync.syncObservation.length).toBeGreaterThanOrEqual(0);
     });
   });
@@ -147,20 +131,6 @@ describe('ChromaSync Vector Sync Integration', () => {
       const { ChromaSync } = await import('../../src/services/sync/ChromaSync.js');
       const sync = new ChromaSync(testProject);
 
-      const summaryId = 1;
-      const memorySessionId = 'session-123';
-      const project = 'test-project';
-      const summary = {
-        request: 'Test request',
-        investigated: 'Test investigated',
-        learned: 'Test learned',
-        completed: 'Test completed',
-        next_steps: 'Test next steps',
-        notes: 'Test notes'
-      };
-      const promptNumber = 1;
-      const createdAtEpoch = Date.now();
-
       expect(typeof sync.syncSummary).toBe('function');
     });
   });
@@ -169,13 +139,6 @@ describe('ChromaSync Vector Sync Integration', () => {
     it('should accept prompt text format', async () => {
       const { ChromaSync } = await import('../../src/services/sync/ChromaSync.js');
       const sync = new ChromaSync(testProject);
-
-      const promptId = 1;
-      const memorySessionId = 'session-123';
-      const project = 'test-project';
-      const promptText = 'Help me write a function';
-      const promptNumber = 1;
-      const createdAtEpoch = Date.now();
 
       expect(typeof sync.syncUserPrompt).toBe('function');
     });

@@ -11,7 +11,7 @@ import type { ActiveSession, SDKUserMessage } from '../../../src/services/worker
 import type { FieldCompressor } from '../../../src/services/worker/field-optimizer.js';
 
 // Executed in a child with an owned CLAUDE_MEM_DATA_DIR before modules load.
-const cleanup: Array<() => void | Promise<unknown>> = [];
+const cleanup: Array<(() => void) | (() => Promise<unknown>)> = [];
 try {
   const provider = process.argv[2];
   const advances = provider !== 'gemini-control';

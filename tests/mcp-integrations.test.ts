@@ -4,7 +4,6 @@ import { join } from 'path';
 import { tmpdir } from 'os';
 
 import { readJsonSafe } from '../src/utils/json-utils';
-import { injectContextIntoMarkdownFile, CONTEXT_TAG_OPEN, CONTEXT_TAG_CLOSE } from '../src/utils/context-injection';
 
 function buildMcpServerEntry(mcpServerPath: string): { command: string; args: string[] } {
   return {

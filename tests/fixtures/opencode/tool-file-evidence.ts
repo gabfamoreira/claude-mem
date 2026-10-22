@@ -12,7 +12,7 @@ import { SettingsDefaultsManager } from '../../../src/shared/SettingsDefaultsMan
 // Primary host schemas: anomalyco/opencode@907b3bc packages/opencode/src/tool/{read,write,edit,apply_patch}.ts
 // Hook input.args contract: packages/plugin/src/index.ts. Values here are owned fixtures.
 const kind = process.argv[2];
-const cleanup: Array<() => void | Promise<unknown>> = [];
+const cleanup: Array<(() => void) | (() => Promise<unknown>)> = [];
 let port = 0;
 try {
  const cwd = join(process.env.CLAUDE_MEM_DATA_DIR!, 'owned-project'); mkdirSync(join(cwd,'src'),{recursive:true});

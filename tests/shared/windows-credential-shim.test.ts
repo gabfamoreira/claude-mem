@@ -26,7 +26,7 @@ function declaredTypeName(text: string): string {
 }
 
 function declaredMemberNames(text: string): string[] {
-  return [...text.matchAll(/public\s+(?:static\s+extern\s+)?[\w.<>\[\]]+\s+(\w+)\s*\(/g)].map(
+  return [...text.matchAll(/public\s+(?:static\s+extern\s+)?[\w.<>[\]]+\s+(\w+)\s*\(/g)].map(
     (m) => m[1],
   );
 }

@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach, afterEach, spyOn, mock } from 'bun:test';
-import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import { createHash } from 'crypto';
 import { join } from 'path';
@@ -29,7 +28,6 @@ import { SettingsDefaultsManager } from '../../src/shared/SettingsDefaultsManage
  * to a per-test temp dir for marker/sidecar tests.
  */
 
-const ORIGINAL_EXEC_FILE = childProcess.execFile;
 const ORIGINAL_PLATFORM = process.platform;
 const ORIGINAL_ENV_TOKEN = process.env.CLAUDE_CODE_OAUTH_TOKEN;
 const ORIGINAL_DATA_DIR = process.env.CLAUDE_MEM_DATA_DIR;

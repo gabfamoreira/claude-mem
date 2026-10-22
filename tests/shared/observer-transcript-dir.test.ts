@@ -35,7 +35,6 @@ import { describe, it, expect, beforeEach, afterEach, spyOn, mock } from 'bun:te
 import * as fs from 'fs';
 import { tmpdir, homedir } from 'os';
 import { join } from 'path';
-import * as childProcess from 'child_process';
 
 // Captured BEFORE the override below, so afterEach puts the real value back
 // and later files in the same bun process never inherit the temp profile.
@@ -294,7 +293,7 @@ describe('#4689 — credential identity is unaffected by the transcript-only dir
     stubSettingsFile({ CLAUDE_MEM_CLAUDE_CONFIG_DIR: '', CLAUDE_MEM_OBSERVER_CLAUDE_CONFIG_DIR: TRANSCRIPT_DIR });
     process.env.CLAUDE_CODE_OAUTH_TOKEN = 'sk-ant-oat01-4689-env-fallback';
 
-    const fakeExecImpl = mock((_cmd: string, _args: readonly string[]) => {
+    const fakeExecImpl = mock(() => {
       return Promise.reject(new Error('The specified item could not be found in the keychain.'));
     });
 

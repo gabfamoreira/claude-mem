@@ -196,7 +196,7 @@ afterEach(() => {
   }
   if (prevDataDir === undefined) delete process.env.CLAUDE_MEM_DATA_DIR;
   else process.env.CLAUDE_MEM_DATA_DIR = prevDataDir;
-  try { rmSync(tmpDir, { recursive: true, force: true }); } catch {}
+  try { rmSync(tmpDir, { recursive: true, force: true }); } catch { /* best-effort temp dir cleanup */ }
 });
 
 afterAll(() => {

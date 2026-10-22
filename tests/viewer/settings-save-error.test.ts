@@ -230,6 +230,7 @@ describe('describeSaveFailure', () => {
     const result = await describeSaveFailure(response);
     expect(SAVE_ERROR_MAX_CHARS).toBe(240);
     const msgPart = result.slice('\u2717 Error: '.length);
+    // eslint-disable-next-line no-control-regex -- asserts C0 control chars (U+0000-U+001F) and DEL (U+007F) were stripped from the message
     expect(msgPart).not.toMatch(/[\u0000-\u001f\u007f]/);
     expect([...msgPart].length).toBe(SAVE_ERROR_MAX_CHARS);
     expect(msgPart.endsWith('\u2026')).toBe(true);

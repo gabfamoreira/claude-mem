@@ -246,7 +246,7 @@ describe('Qwen session prompts through the real session routes', () => {
   });
 
   it('records a first send without submitted_prompt and skips only the empty ToolResult send', async () => {
-    const cleanup: Array<() => void | Promise<unknown>> = [];
+    const cleanup: Array<(() => void) | (() => Promise<unknown>)> = [];
     try {
       const cwd = mkdtempSync(join(tmpdir(), 'claude-mem-qwen-first-send-'));
       cleanup.push(() => rmSync(cwd, { recursive: true, force: true }));

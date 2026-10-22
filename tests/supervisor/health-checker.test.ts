@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, mock } from 'bun:test';
+import { afterEach, describe, expect, it } from 'bun:test';
 import { startHealthChecker, stopHealthChecker } from '../../src/supervisor/health-checker.js';
 
 describe('health-checker', () => {

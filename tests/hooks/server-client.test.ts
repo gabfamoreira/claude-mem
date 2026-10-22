@@ -10,7 +10,7 @@ import * as realWorkerUtils from '../../src/shared/worker-utils.js';
 const realWorkerUtilsSnapshot = { ...realWorkerUtils };
 
 mock.module('../../src/shared/worker-utils.js', () => ({
-  fetchWithTimeout: async (url: string, init: RequestInit, _timeoutMs: number) => {
+  fetchWithTimeout: async (url: string, init: RequestInit) => {
     return globalThis.fetch(url, init);
   },
 }));

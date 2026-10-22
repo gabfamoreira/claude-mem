@@ -30,7 +30,7 @@ it('keeps valid file context readable beside malformed legacy imported JSON', ()
       files_read: ' ["file.ts"] ',
       created_at_epoch: 2000,
     });
-    const object = s.importObservation({
+    s.importObservation({
       ...row,
       title: 'object',
       files_read: '{"unexpected":"file.ts"}',

@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'bun:test';
 import { mkdirSync, rmSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import path from 'path';
-import { validateWorkerPidFile, type ValidateWorkerPidStatus } from '../../src/supervisor/index.js';
+import { validateWorkerPidFile } from '../../src/supervisor/index.js';
 import { captureProcessStartToken } from '../../src/supervisor/process-registry.js';
 
 function makeTempDir(): string {

@@ -136,7 +136,7 @@ function createV2Context(
     directory: "/tmp/x",
     client: {},
     tool: {
-      hook: async (name, _callback) => {
+      hook: async (name) => {
         hooks.push({ domain: "tool", name });
         return { dispose: async () => { disposed++; } };
       },
@@ -149,7 +149,7 @@ function createV2Context(
       },
     },
     session: {
-      hook: async (name, _callback) => {
+      hook: async (name) => {
         hooks.push({ domain: "session", name });
         return { dispose: async () => { disposed++; } };
       },

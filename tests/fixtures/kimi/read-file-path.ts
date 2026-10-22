@@ -16,7 +16,7 @@ const workerUtils = { ...(await import('../../../src/shared/worker-utils.js')) }
 const kind = process.argv[2];
 const contextCase = kind.startsWith('context-');
 const writeControl = kind === 'write-control';
-const cleanup: Array<() => void | Promise<unknown>> = [];
+const cleanup: Array<(() => void) | (() => Promise<unknown>)> = [];
 try {
   const cwd = join(process.env.CLAUDE_MEM_DATA_DIR!, 'owned-project');
   mkdirSync(join(cwd, 'src'), { recursive: true });

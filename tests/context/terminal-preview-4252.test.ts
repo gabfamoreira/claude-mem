@@ -141,6 +141,7 @@ describe('terminal preview shares the model selection (#4252)', () => {
       const first = visible[0];
       const firstRow = preview.text.split('\n').find(line => line.includes(first))!;
       const untruncatedRow = fullPreview.text.split('\n').find(line => line.includes(first))!;
+      // eslint-disable-next-line no-control-regex -- intentionally matches the ESC byte (0x1B) to strip ANSI color codes
       const plain = (line: string) => line.replace(/\x1b\[[0-9;]*m/g, '');
       expect(plain(firstRow)).toMatch(/\d{1,2}:\d{2} [AP]M/);
       expect(plain(untruncatedRow)).not.toMatch(/\d{1,2}:\d{2} [AP]M/);

@@ -29,15 +29,6 @@ async function isPortInUse(port: number): Promise<boolean> {
   }
 }
 
-async function waitForHealth(port: number, timeoutMs: number = 30000): Promise<boolean> {
-  const start = Date.now();
-  while (Date.now() - start < timeoutMs) {
-    if (await isPortInUse(port)) return true;
-    await new Promise(r => setTimeout(r, 500));
-  }
-  return false;
-}
-
 function runWorkerCommand(command: string, env: Record<string, string> = {}): string {
   const result = execSync(`bun "${WORKER_SCRIPT}" ${command}`, {
     env: { ...process.env, ...env },

@@ -17,7 +17,7 @@ it.skipIf(process.platform === 'win32')('terminates a timed-out installer that i
       const pid = Number(readFileSync(pidFile, 'utf8'));
       const current = spawnSync('ps', ['-p', String(pid), '-o', 'args='], { encoding: 'utf8' });
       if (current.status === 0 && current.stdout.includes(join(root, 'npm'))) process.kill(pid, 'SIGKILL');
-    } catch {}
+    } catch { /* best-effort orphan cleanup; the process may already be gone */ }
   };
   // Independent cleanup guarantees the failing baseline never leaves an orphan.
   const watchdog = setTimeout(cleanup, 5000);
@@ -52,7 +52,7 @@ it.skipIf(process.platform === 'win32')('reports a timeout even if the child han
       const pid = Number(readFileSync(pidFile, 'utf8'));
       const current = spawnSync('ps', ['-p', String(pid), '-o', 'args='], { encoding: 'utf8' });
       if (current.status === 0 && current.stdout.includes(join(root, 'npm'))) process.kill(pid, 'SIGKILL');
-    } catch {}
+    } catch { /* best-effort orphan cleanup; the process may already be gone */ }
   };
   const watchdog = setTimeout(cleanup, 5000);
   try {

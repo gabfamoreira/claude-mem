@@ -95,7 +95,7 @@ describe('isWorkerPortAlive (via ensureWorkerRunning) — healthy port, pid file
 
     spawnCalled = false;
     mock.module('../../src/shared/spawn.js', () => ({
-      spawnHidden: (...args: unknown[]) => {
+      spawnHidden: () => {
         spawnCalled = true;
         return { pid: 9999, unref: () => {}, on: () => {} };
       },

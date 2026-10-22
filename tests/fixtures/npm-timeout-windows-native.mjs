@@ -83,7 +83,7 @@ try {
   assert.match(result.stderr, /owned npm stderr/);
 } finally {
   clearTimeout(observationTimer);
-  if (!pid) { try { pid = Number(readFileSync(pidFile, 'utf8')); } catch {} }
+  if (!pid) { try { pid = Number(readFileSync(pidFile, 'utf8')); } catch { /* pid file may not exist yet */ } }
   cleanupOwnedFixture();
   childProcess.execFile = originalExecFile;
   syncBuiltinESMExports();

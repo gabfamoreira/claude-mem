@@ -183,8 +183,8 @@ describe('first-party harness installers', () => {
     expect(text).toContain('docs/pi-native-capture.md');
   });
 
-  it.each(['LICENSE', 'NOTICE', 'pi/THIRD-PARTY-LICENSE.txt', 'pi/TYPEBOX-LICENSE.txt', 'pi/TYPEBOX-PROVENANCE.json', 'dist/pi-extension/TYPEBOX-LICENSE.txt'])
-    ('refuses missing Pi input %s before creating a destination', (missing: string) => {
+  it.each(['LICENSE', 'NOTICE', 'pi/THIRD-PARTY-LICENSE.txt', 'pi/TYPEBOX-LICENSE.txt', 'pi/TYPEBOX-PROVENANCE.json', 'dist/pi-extension/TYPEBOX-LICENSE.txt'])(
+    'refuses missing Pi input %s before creating a destination', (missing: string) => {
       const result = runIsolatedPi(`
         const status = pi.installPiExtension();
         console.log('PI_RESULT=' + JSON.stringify({ status, exists: existsSync(folder) }));

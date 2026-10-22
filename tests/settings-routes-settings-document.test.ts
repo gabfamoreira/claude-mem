@@ -1,7 +1,7 @@
 import express from 'express';
 import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
 import { readFileSync, mkdtempSync, rmSync, writeFileSync } from 'fs';
-import { tmpdir, homedir } from 'os';
+import { tmpdir } from 'os';
 import { join } from 'path';
 import { SettingsRoutes } from '../src/services/worker/http/routes/SettingsRoutes.js';
 import { paths } from '../src/shared/paths.js';

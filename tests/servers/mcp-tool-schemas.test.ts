@@ -4,8 +4,6 @@ import { fileURLToPath } from 'node:url';
 const mcpServerPath = fileURLToPath(new URL('../../src/servers/mcp-server.ts', import.meta.url));
 
 describe('MCP tool inputSchema declarations', () => {
-  let tools: any[];
-
   it('search tool declares query parameter', async () => {
     const src = await Bun.file(mcpServerPath).text();
 

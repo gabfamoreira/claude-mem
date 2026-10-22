@@ -69,7 +69,7 @@ function runVersionCheck(pluginRoot: string, fakeBinDir: string): Promise<{ stde
       child.stdin.end();
 
       timer = setTimeout(() => {
-        try { child.kill('SIGKILL'); } catch {}
+        try { child.kill('SIGKILL'); } catch { /* child may already have exited */ }
         reject(new Error(`version-check subprocess exceeded ${SPAWN_TIMEOUT_MS}ms`));
       }, SPAWN_TIMEOUT_MS);
 
@@ -83,7 +83,7 @@ function runVersionCheck(pluginRoot: string, fakeBinDir: string): Promise<{ stde
       });
     } catch (err) {
       if (timer) clearTimeout(timer);
-      try { child.kill('SIGKILL'); } catch {}
+      try { child.kill('SIGKILL'); } catch { /* child may already have exited */ }
       reject(err);
     }
   });
@@ -267,7 +267,7 @@ beforeAll(() => {
 });
 
 afterAll(() => {
-  try { rmSync(tmpRoot, { recursive: true, force: true }); } catch {}
+  try { rmSync(tmpRoot, { recursive: true, force: true }); } catch { /* best-effort temp dir cleanup */ }
 });
 
 describe.skipIf(SKIP_NON_UNIX)('version-check Setup-phase ensurePluginDependencies (gh #2649, #3755)', () => {

@@ -27,7 +27,7 @@ const server = Bun.serve({ hostname: '127.0.0.1', port: 0, async fetch(request) 
   arrivals.push(performance.now());
   if (stall && arrivals.length === 1) timers.push(setTimeout(() => {
     const until = performance.now() + 8600;
-    while (performance.now() < until) {} // Controlled worker suspension; no fake timers.
+    while (performance.now() < until) { /* busy-wait: blocks the event loop on purpose */ } // Controlled worker suspension; no fake timers.
   }, 10));
   const session = sessions[arrivals.length - 1];
   timers.push(setTimeout(() => session.abortController.abort(), 30));

@@ -48,7 +48,7 @@ describe('Telegram observation alerts', () => {
   it('does not send when the observation-alert setting is unset', async () => {
     const configured = settings();
     delete (configured as Partial<SettingsDefaults>).CLAUDE_MEM_TELEGRAM_OBSERVATION_ALERTS_ENABLED;
-    const fetchMock = mock((_url: string | URL | Request, _init?: RequestInit) => (
+    const fetchMock = mock(() => (
       Promise.resolve(new Response('', { status: 200 }))
     )) as unknown as typeof fetch;
     global.fetch = fetchMock;
@@ -60,7 +60,7 @@ describe('Telegram observation alerts', () => {
   });
 
   it('does not send when observation alerts are false', async () => {
-    const fetchMock = mock((_url: string | URL | Request, _init?: RequestInit) => (
+    const fetchMock = mock(() => (
       Promise.resolve(new Response('', { status: 200 }))
     )) as unknown as typeof fetch;
     global.fetch = fetchMock;
@@ -74,7 +74,7 @@ describe('Telegram observation alerts', () => {
   });
 
   it('sends once when observation alerts are true and an observation matches', async () => {
-    const fetchMock = mock((_url: string | URL | Request, _init?: RequestInit) => (
+    const fetchMock = mock(() => (
       Promise.resolve(new Response('', { status: 200 }))
     )) as unknown as typeof fetch;
     global.fetch = fetchMock;

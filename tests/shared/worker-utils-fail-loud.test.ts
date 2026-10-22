@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, spyOn } from 'bun:test';
 import { existsSync, mkdirSync, rmSync } from 'fs';
-import { tmpdir } from 'os';
 import { join } from 'path';
 
 // Eagerly evaluate paths.ts BEFORE any per-test env override: it freezes

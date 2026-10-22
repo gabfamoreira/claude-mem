@@ -23,8 +23,6 @@ const serverBetaCalls: {
   contextObservations: [],
 };
 
-let workerFallbackCalled = false;
-
 mock.module('../../../src/shared/SettingsDefaultsManager.js', () => ({
   SettingsDefaultsManager: {
     get: (key: string) => {
@@ -52,7 +50,6 @@ mock.module('../../../src/shared/hook-settings.js', () => ({
 
 mock.module('../../../src/shared/worker-utils.js', () => ({
   executeWithWorkerFallback: async () => {
-    workerFallbackCalled = true;
     throw new Error('worker fallback should not be called in server-beta success path');
   },
   isWorkerFallback: () => false,
@@ -86,7 +83,6 @@ let loggerSpies: ReturnType<typeof spyOn>[] = [];
 
 beforeEach(() => {
   delete process.env.CLAUDE_MEM_INTERNAL;
-  workerFallbackCalled = false;
   serverBetaCalls.startSession.length = 0;
   serverBetaCalls.contextObservations.length = 0;
   loggerSpies.forEach(spy => spy.mockRestore());

@@ -362,7 +362,6 @@ describe('isWorkerUnavailableError', () => {
 
   describe('programming errors → false (blocking)', () => {
     it('should NOT classify TypeError as worker unavailable', () => {
-      const error = new TypeError('Cannot read properties of undefined');
       expect(isWorkerUnavailableError(new TypeError('Cannot read properties of undefined'))).toBe(false);
     });
 

@@ -12,7 +12,7 @@ import { SettingsDefaultsManager } from '../../../src/shared/SettingsDefaultsMan
 // OpenClaw PluginHookAfterToolCallEvent carries toolName, params and result.
 // Values and workspace below are owned fixtures; no real host or account is contacted.
 const kind = process.argv[2];
-const cleanup: Array<() => void | Promise<unknown>> = [];
+const cleanup: Array<(() => void) | (() => Promise<unknown>)> = [];
 let port = 0;
 try {
  const cwd = join(process.env.CLAUDE_MEM_DATA_DIR!, 'owned-project'); mkdirSync(join(cwd,'src'),{recursive:true});
@@ -45,9 +45,9 @@ try {
   return Response.json({candidates:[{content:{parts:[{text:'<observation><type>discovery</type><title>Owned OpenClaw tool</title></observation>'}]}}],usageMetadata:{promptTokenCount:100,candidatesTokenCount:20,totalTokenCount:120}});
  }});port=server.port;cleanup.push(()=>server.stop(true));
  const {default:register}=await import(process.env.CLAUDE_MEM_OPENCLAW_MODULE || '../../../openclaw/src/index.ts');
- const hooks = new Map<string,Function>();
+ const hooks = new Map<string,(event: unknown, ctx: unknown) => unknown>();
  register({id:'owned',name:'owned',source:'owned',config:{},pluginConfig:{workerPort:port,workerHost:'127.0.0.1',syncMemoryFile:false},
-  logger:{info(){},warn(){},error(){}},runtime:{channel:{}},registerService(){},registerCommand(){},on(name:string,callback:Function){hooks.set(name,callback)}} as any);
+  logger:{info(){},warn(){},error(){}},runtime:{channel:{}},registerService(){},registerCommand(){},on(name:string,callback:(event: unknown, ctx: unknown) => unknown){hooks.set(name,callback)}} as any);
  const result = kind === 'string-result' ? readFileSync(filePath,'utf8') : {content:[{type:'text',text:readFileSync(filePath,'utf8')}]};
  if(kind !== 'memory-control') assert.ok(hooks.get('after_tool_call'),'actual completion hook must be registered');
  const event={toolName:tool,params,result,toolCallId:'owned-call'};
