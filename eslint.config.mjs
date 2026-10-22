@@ -180,6 +180,18 @@ export default defineConfig([
     },
   },
   {
+    // Config change, not a cleanup: in the CLI commands and the per-IDE
+    // installers, console output IS the user-facing terminal output, not
+    // logging. Same ordering requirement as the block above.
+    files: [
+      "src/npx-cli/**/*.{ts,tsx,js,mjs,cjs}",
+      "src/services/integrations/*Installer*.ts",
+    ],
+    rules: {
+      "quality/no-direct-console": "off",
+    },
+  },
+  {
     // The same file budget for test files, at "warn". Also placed after the
     // "error" block for the same ordering reason. Two glob branches, because
     // a file counts as a test either by suffix or by directory -- and the
@@ -228,6 +240,8 @@ export default defineConfig([
     "package-lock.json",
     // Built plugin output (committed bundles produced by npm run build).
     "plugin/**",
+    // Vendored, minified third-party bundle (see vendor/provenance.json).
+    "src/integrations/dsh-plugin/vendor/**",
     // Separate packages with their own package.json and dependencies.
     "dsh/**",
     "openclaw/**",
